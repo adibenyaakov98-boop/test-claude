@@ -20,6 +20,10 @@ Claude automatically:
 - Thinking: Enabled for complex tasks
 - Priority: Quality & testing, then documentation
 
+## Commits
+
+Claude will NOT be added as a co-author on commits. All commits are attributed to you only.
+
 ## Quick Start
 
 ### Prerequisites
