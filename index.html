@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CocoNUT Cracker - Precision Coconut Analysis System</title>
+    <title>CocoNUT Cracker - Precision Coconut Analysis</title>
 
     <!-- CDN Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
@@ -11,11 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --bg-deep: #0a0f1a;
@@ -25,9 +21,6 @@
             --neon-gold: #ffd700;
             --neon-orange: #ff6b35;
             --panel-border: #1a3a5c;
-            --glow-green: 0 0 10px #00ff88, 0 0 20px #00ff8844;
-            --glow-cyan: 0 0 10px #00e5ff, 0 0 20px #00e5ff44;
-            --glow-gold: 0 0 10px #ffd700, 0 0 20px #ffd70044;
         }
 
         html, body {
@@ -39,7 +32,6 @@
             overflow: hidden;
         }
 
-        /* Particles Background */
         #particles-bg {
             position: fixed;
             top: 0;
@@ -50,17 +42,14 @@
             pointer-events: none;
         }
 
-        /* Scan line overlay */
-        #scan-lines-overlay {
+        #scan-lines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
+                0deg, transparent, transparent 2px,
                 rgba(0, 0, 0, 0.03) 2px,
                 rgba(0, 0, 0, 0.03) 4px
             );
@@ -68,8 +57,7 @@
             z-index: 998;
         }
 
-        /* Main app shell */
-        .app-shell {
+        .app {
             position: relative;
             z-index: 1;
             width: 100%;
@@ -78,68 +66,57 @@
             flex-direction: column;
         }
 
-        /* Header HUD */
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .header {
             padding: 20px 30px;
             border-bottom: 2px solid var(--panel-border);
             background: rgba(13, 26, 46, 0.7);
             backdrop-filter: blur(8px);
-        }
-
-        .logo-zone {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+        }
+
+        .logo {
+            display: flex;
             gap: 15px;
+            align-items: center;
         }
 
-        .logo-zone .coconut-icon {
+        .logo-icon {
             font-size: 32px;
-            animation: coconutBounce 3s ease-in-out infinite;
+            animation: bounce 3s ease-in-out infinite;
         }
 
-        .logo-zone h1 {
+        .logo-text h1 {
             font-size: 24px;
             color: var(--neon-gold);
-            text-shadow: var(--glow-gold);
+            text-shadow: 0 0 10px var(--neon-gold);
             letter-spacing: 2px;
         }
 
-        .logo-zone .subtitle {
+        .logo-text .subtitle {
             font-size: 10px;
             color: var(--neon-cyan);
-            text-shadow: var(--glow-cyan);
             letter-spacing: 1px;
         }
 
-        .system-stats {
+        .status {
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 20px;
             font-size: 12px;
-        }
-
-        .system-badge {
             color: var(--neon-green);
-            text-shadow: var(--glow-green);
-            letter-spacing: 1px;
         }
 
-        .blinking-dot {
-            display: inline-block;
+        .dot {
             width: 8px;
             height: 8px;
             background: var(--neon-green);
             border-radius: 50%;
-            margin-left: 5px;
             animation: blink 1s infinite;
-            box-shadow: var(--glow-green);
         }
 
-        /* Main content grid */
-        .mission-control {
+        .content {
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1.5fr 1fr;
@@ -148,102 +125,66 @@
             overflow-y: auto;
         }
 
-        .panel-card {
+        .panel {
             background: rgba(13, 26, 46, 0.85);
             backdrop-filter: blur(12px);
             border: 1px solid var(--panel-border);
             border-radius: 8px;
             padding: 20px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--glow-cyan);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .panel-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 10px;
-            width: 20px;
-            height: 2px;
-            background: var(--neon-cyan);
-            box-shadow: var(--glow-cyan);
-        }
-
-        .panel-card::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            right: 10px;
-            width: 20px;
-            height: 2px;
-            background: var(--neon-cyan);
-            box-shadow: var(--glow-cyan);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
         }
 
         .panel-title {
             font-size: 12px;
             color: var(--neon-green);
-            text-shadow: var(--glow-green);
             letter-spacing: 1px;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--panel-border);
         }
 
-        /* Upload Panel */
-        .upload-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #drop-zone {
-            flex: 1;
+        .upload-zone {
             border: 2px dashed var(--panel-border);
             border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 40px 20px;
+            text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center;
+            margin-bottom: 15px;
         }
 
-        #drop-zone:hover {
+        .upload-zone:hover {
             border-color: var(--neon-cyan);
             background: rgba(0, 229, 255, 0.05);
         }
 
-        #drop-zone.drag-over {
+        .upload-zone.drag-over {
             border-color: var(--neon-green);
             background: rgba(0, 255, 136, 0.1);
-            box-shadow: var(--glow-green);
             transform: scale(1.02);
         }
 
-        .drop-zone-icon {
+        .upload-icon {
             font-size: 48px;
             margin-bottom: 10px;
-            animation: floatIcon 3s ease-in-out infinite;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .drop-zone-text {
-            font-size: 14px;
+        .upload-text {
             color: var(--neon-cyan);
-            text-shadow: var(--glow-cyan);
+            font-size: 14px;
+            margin-bottom: 5px;
         }
 
-        .drop-zone-hint {
-            font-size: 11px;
+        .upload-hint {
             color: #888;
-            margin-top: 5px;
+            font-size: 11px;
         }
 
-        #upload-controls {
+        .buttons {
             display: flex;
             gap: 10px;
+            margin-bottom: 15px;
         }
 
         button {
@@ -252,7 +193,6 @@
             border: 1px solid var(--panel-border);
             background: transparent;
             color: var(--neon-cyan);
-            text-shadow: var(--glow-cyan);
             cursor: pointer;
             border-radius: 4px;
             font-family: 'Courier New', monospace;
@@ -264,7 +204,7 @@
         button:hover:not(:disabled) {
             background: rgba(0, 229, 255, 0.1);
             border-color: var(--neon-cyan);
-            box-shadow: var(--glow-cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
         }
 
         button:disabled {
@@ -272,43 +212,35 @@
             cursor: not-allowed;
         }
 
-        #btn-analyze:not(:disabled):hover {
-            color: var(--neon-green);
-            text-shadow: var(--glow-green);
-            border-color: var(--neon-green);
-            box-shadow: var(--glow-green);
-        }
-
-        .sample-targets {
+        .samples {
             display: flex;
             gap: 10px;
             font-size: 11px;
             color: #888;
         }
 
-        .sample-thumb {
+        .sample-btn {
             width: 50px;
             height: 50px;
+            padding: 5px;
             border: 1px solid var(--panel-border);
-            border-radius: 4px;
+            background: transparent;
             cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
+            border-radius: 4px;
         }
 
-        .sample-thumb:hover {
+        .sample-btn:hover {
             border-color: var(--neon-orange);
-            box-shadow: var(--glow-gold);
         }
 
-        /* Canvas Panel */
-        .canvas-panel {
+        .canvas-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
-        .canvas-wrapper {
+        .canvas-wrap {
             flex: 1;
             position: relative;
             background: rgba(0, 0, 0, 0.3);
@@ -322,75 +254,45 @@
             display: block;
         }
 
-        #scan-beam {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(transparent, var(--neon-cyan), transparent);
-            box-shadow: var(--glow-cyan);
-            pointer-events: none;
-            display: none;
-        }
-
-        #analysis-status-bar {
+        .status-bar {
             padding: 10px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--panel-border);
             border-radius: 4px;
             font-size: 12px;
             color: var(--neon-green);
-            text-shadow: var(--glow-green);
-            letter-spacing: 1px;
             text-align: center;
         }
 
-        /* Results Panel */
-        .results-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        #results-placeholder {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #666;
-            text-align: center;
-        }
-
-        .lock-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-            animation: lockPulse 2s ease-in-out infinite;
-        }
-
-        #results-data {
+        .results {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .metric-card {
+        .results-locked {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #666;
+            flex: 1;
+        }
+
+        .lock-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .metric {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--panel-border);
             border-radius: 4px;
             padding: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .metric-card:hover {
-            background: rgba(0, 229, 255, 0.05);
-            border-color: var(--neon-cyan);
-            box-shadow: var(--glow-cyan);
         }
 
         .metric-label {
-            display: block;
             font-size: 10px;
             color: #888;
             letter-spacing: 1px;
@@ -398,22 +300,19 @@
         }
 
         .metric-value {
-            display: block;
             font-size: 18px;
             color: var(--neon-gold);
-            text-shadow: var(--glow-gold);
+            text-shadow: 0 0 10px var(--neon-gold);
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         .metric-unit {
-            display: block;
             font-size: 10px;
             color: var(--neon-cyan);
             margin-top: 3px;
         }
 
-        .confidence-bar-track {
+        .confidence-bar {
             width: 100%;
             height: 6px;
             background: rgba(0, 0, 0, 0.5);
@@ -423,53 +322,49 @@
             border: 1px solid var(--panel-border);
         }
 
-        .confidence-bar-fill {
+        .confidence-fill {
             height: 100%;
             background: linear-gradient(90deg, #ff3333, #ffaa00, var(--neon-green));
             width: 0%;
-            border-radius: 3px;
-            box-shadow: var(--glow-green);
             transition: width 1s ease-out;
         }
 
-        .tips-section {
+        .tips {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--neon-orange);
             border-radius: 4px;
             padding: 10px;
-            margin-top: 10px;
+            font-size: 12px;
         }
 
-        .tips-section .tips-label {
-            font-size: 10px;
+        .tips-label {
             color: var(--neon-orange);
+            font-size: 10px;
             letter-spacing: 1px;
             margin-bottom: 8px;
-            text-transform: uppercase;
         }
 
         .tip-item {
-            font-size: 12px;
             color: #ccc;
             margin-bottom: 6px;
             padding-left: 10px;
             border-left: 2px solid var(--neon-orange);
+            font-size: 11px;
         }
 
-        #btn-reset {
+        .reset-btn {
             background: rgba(255, 107, 53, 0.1);
             color: var(--neon-orange);
-            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
             border-color: var(--neon-orange);
             margin-top: 10px;
         }
 
-        #btn-reset:hover {
+        .reset-btn:hover {
             background: rgba(255, 107, 53, 0.2);
         }
 
-        /* Scan Modal */
-        #scan-modal {
+        /* Modal */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -480,254 +375,582 @@
             justify-content: center;
             align-items: center;
             z-index: 10000;
+            display: none;
         }
 
-        .scan-modal-inner {
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
             text-align: center;
         }
 
-        .radar-ring {
+        .radar {
             width: 120px;
             height: 120px;
             margin: 0 auto 30px;
             border: 2px solid var(--neon-cyan);
             border-radius: 50%;
-            box-shadow: var(--glow-cyan), inset 0 0 20px var(--neon-cyan);
-            animation: radarSpin 2s linear infinite;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            animation: spin 2s linear infinite;
             position: relative;
         }
 
-        .radar-ring::before {
-            content: '';
-            position: absolute;
-            width: 30%;
-            height: 30%;
-            top: 10%;
-            left: 10%;
-            background: conic-gradient(from 0deg, transparent, var(--neon-cyan), transparent);
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: radarSweep 2s linear infinite;
-        }
-
-        .scan-progress-text {
+        .modal-text {
             font-size: 16px;
             color: var(--neon-green);
-            text-shadow: var(--glow-green);
             letter-spacing: 2px;
             margin-bottom: 30px;
         }
 
-        .progress-steps {
+        .steps {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .progress-step {
+        .step {
             font-size: 12px;
             color: #666;
-            letter-spacing: 1px;
             opacity: 0;
             transition: all 0.3s ease;
         }
 
-        .progress-step.active {
+        .step.active {
             color: var(--neon-green);
-            text-shadow: var(--glow-green);
             opacity: 1;
         }
 
-        /* Input (hidden) */
         input[type="file"] {
             display: none;
         }
 
-        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
         @keyframes blink {
             0%, 49%, 51%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
 
-        @keyframes coconutBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        @keyframes lockPulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes radarSpin {
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        @keyframes radarSweep {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .mission-control {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
-            }
         }
 
         @media (max-width: 768px) {
-            .hud-header {
-                padding: 15px 20px;
-            }
-
-            .logo-zone h1 {
-                font-size: 18px;
-            }
-
-            .mission-control {
-                padding: 15px;
-                gap: 15px;
-            }
-
-            .panel-card {
-                padding: 15px;
+            .content {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div id="particles-bg"></div>
-    <div id="scan-lines-overlay"></div>
+    <div id="scan-lines"></div>
 
-    <div class="app-shell">
-        <!-- Header -->
-        <header class="hud-header">
-            <div class="logo-zone">
-                <div class="coconut-icon">🥥</div>
-                <div>
+    <div class="app">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🥥</div>
+                <div class="logo-text">
                     <h1>CocoNUT Cracker</h1>
                     <div class="subtitle">PRECISION COCONUT ANALYSIS SYSTEM v2.0</div>
                 </div>
             </div>
-            <div class="system-stats">
-                <div class="system-badge">SYSTEM ONLINE<span class="blinking-dot"></span></div>
+            <div class="status">
+                <span>SYSTEM ONLINE</span>
+                <div class="dot"></div>
             </div>
-        </header>
+        </div>
 
-        <!-- Main Content -->
-        <main class="mission-control">
+        <div class="content">
             <!-- Upload Panel -->
-            <section class="panel-card upload-panel">
+            <div class="panel">
                 <div class="panel-title">// TARGET ACQUISITION</div>
-                <div id="drop-zone">
-                    <div class="drop-zone-icon">📡</div>
-                    <div class="drop-zone-text">DROP COCONUT IMAGE HERE</div>
-                    <div class="drop-zone-hint">or click to select</div>
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">📡</div>
+                    <div class="upload-text">DROP COCONUT IMAGE</div>
+                    <div class="upload-hint">or click to select</div>
                 </div>
-                <div id="upload-controls">
-                    <button id="btn-upload">SELECT TARGET</button>
-                    <button id="btn-analyze" disabled>INITIATE ANALYSIS</button>
+                <div class="buttons">
+                    <button id="uploadBtn">SELECT TARGET</button>
+                    <button id="analyzeBtn" disabled>INITIATE ANALYSIS</button>
                 </div>
-                <div class="sample-targets">
-                    <div class="sample-thumb" id="sample-1" title="Sample 1"></div>
-                    <div class="sample-thumb" id="sample-2" title="Sample 2"></div>
-                    <div class="sample-thumb" id="sample-3" title="Sample 3"></div>
-                </div>
-            </section>
+                <div class="samples" id="samples"></div>
+            </div>
 
             <!-- Canvas Panel -->
-            <section class="panel-card canvas-panel">
+            <div class="panel canvas-container">
                 <div class="panel-title">// VISUAL FEED</div>
-                <div class="canvas-wrapper">
-                    <canvas id="image-canvas"></canvas>
-                    <canvas id="overlay-canvas"></canvas>
-                    <div id="scan-beam"></div>
+                <div class="canvas-wrap">
+                    <canvas id="imageCanvas"></canvas>
+                    <canvas id="overlayCanvas"></canvas>
                 </div>
-                <div id="analysis-status-bar">AWAITING TARGET ACQUISITION</div>
-            </section>
+                <div class="status-bar" id="statusBar">AWAITING TARGET ACQUISITION</div>
+            </div>
 
             <!-- Results Panel -->
-            <section class="panel-card results-panel">
+            <div class="panel">
                 <div class="panel-title">// MISSION DATA</div>
-                <div id="results-placeholder">
+                <div id="resultsLocked" class="results-locked">
                     <div class="lock-icon">🔒</div>
                     <div>RUN ANALYSIS TO UNLOCK</div>
                 </div>
-                <div id="results-data" hidden>
-                    <div class="metric-card">
-                        <span class="metric-label">OPTIMAL POSITION</span>
-                        <span class="metric-value" id="val-position">--</span>
-                        <span class="metric-unit">X,Y COORDINATES</span>
+                <div id="resultsContent" class="results" style="display: none;">
+                    <div class="metric">
+                        <div class="metric-label">OPTIMAL POSITION</div>
+                        <div class="metric-value" id="posValue">--</div>
+                        <div class="metric-unit">X,Y COORDINATES</div>
                     </div>
-                    <div class="metric-card">
-                        <span class="metric-label">STRIKE ANGLE</span>
-                        <span class="metric-value" id="val-angle">--</span>
-                        <span class="metric-unit">DEGREES</span>
+                    <div class="metric">
+                        <div class="metric-label">STRIKE ANGLE</div>
+                        <div class="metric-value" id="angleValue">--</div>
+                        <div class="metric-unit">DEGREES</div>
                     </div>
-                    <div class="metric-card">
-                        <span class="metric-label">CONFIDENCE LEVEL</span>
-                        <div class="confidence-bar-track">
-                            <div class="confidence-bar-fill" id="confidence-fill"></div>
+                    <div class="metric">
+                        <div class="metric-label">CONFIDENCE LEVEL</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill"></div>
                         </div>
-                        <span class="metric-value" id="val-confidence">--%</span>
+                        <div class="metric-value" id="confValue">--%</div>
                     </div>
-                    <div class="metric-card">
-                        <span class="metric-label">MACHETE TAP FORCE</span>
-                        <span class="metric-value" id="val-force">--</span>
-                        <span class="metric-unit">LIGHT / MEDIUM / FIRM</span>
+                    <div class="metric">
+                        <div class="metric-label">MACHETE TAP FORCE</div>
+                        <div class="metric-value" id="forceValue">--</div>
+                        <div class="metric-unit">LIGHT / MEDIUM / FIRM</div>
                     </div>
-                    <div class="tips-section" id="tips-box">
+                    <div class="tips">
                         <div class="tips-label">⚡ TACTICAL TIPS</div>
+                        <div id="tipsList"></div>
                     </div>
-                    <button id="btn-reset">NEW TARGET</button>
-                </div>
-            </section>
-        </main>
-
-        <!-- Scan Modal -->
-        <div id="scan-modal" hidden>
-            <div class="scan-modal-inner">
-                <div class="radar-ring"></div>
-                <div class="scan-progress-text">ANALYZING COCONUT STRUCTURE...</div>
-                <div class="progress-steps" id="progress-steps">
-                    <div class="progress-step">INITIALIZING PIXEL MATRIX</div>
-                    <div class="progress-step">DETECTING COCONUT BOUNDARY</div>
-                    <div class="progress-step">SCANNING FOR EYE CLUSTERS</div>
-                    <div class="progress-step">COMPUTING OPTIMAL STRIKE VECTOR</div>
-                    <div class="progress-step">CALCULATING CONFIDENCE MATRIX</div>
-                    <div class="progress-step">ANALYSIS COMPLETE ✓</div>
+                    <button id="resetBtn" class="reset-btn">NEW TARGET</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Scan Modal -->
+    <div id="scanModal" class="modal">
+        <div class="modal-content">
+            <div class="radar"></div>
+            <div class="modal-text">ANALYZING COCONUT STRUCTURE...</div>
+            <div class="steps" id="steps">
+                <div class="step">INITIALIZING PIXEL MATRIX</div>
+                <div class="step">DETECTING COCONUT BOUNDARY</div>
+                <div class="step">SCANNING FOR EYE CLUSTERS</div>
+                <div class="step">COMPUTING OPTIMAL STRIKE VECTOR</div>
+                <div class="step">CALCULATING CONFIDENCE MATRIX</div>
+                <div class="step">ANALYSIS COMPLETE ✓</div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*">
+
     <script>
-        // ============ UI CONTROLLER ============
-        const UIController = {
-            state: 'idle',
+        // ============ APP STATE ============
+        let appState = {
+            imageLoaded: false,
+            analyzing: false,
+            lastResult: null
+        };
 
-            init() {
-                this.setupEventListeners();
-                this.initParticles();
-            },
+        // ============ DOM ELEMENTS ============
+        const dom = {
+            dropZone: document.getElementById('dropZone'),
+            uploadBtn: document.getElementById('uploadBtn'),
+            analyzeBtn: document.getElementById('analyzeBtn'),
+            fileInput: document.getElementById('fileInput'),
+            imageCanvas: document.getElementById('imageCanvas'),
+            overlayCanvas: document.getElementById('overlayCanvas'),
+            statusBar: document.getElementById('statusBar'),
+            scanModal: document.getElementById('scanModal'),
+            steps: document.querySelectorAll('.step'),
+            resultsLocked: document.getElementById('resultsLocked'),
+            resultsContent: document.getElementById('resultsContent'),
+            posValue: document.getElementById('posValue'),
+            angleValue: document.getElementById('angleValue'),
+            confValue: document.getElementById('confValue'),
+            forceValue: document.getElementById('forceValue'),
+            confidenceFill: document.getElementById('confidenceFill'),
+            tipsList: document.getElementById('tipsList'),
+            resetBtn: document.getElementById('resetBtn'),
+            samples: document.getElementById('samples')
+        };
 
-            setupEventListeners() {
-                document.getElementById('btn-upload').addEventListener('click', () => {
-                    document.getElementById('file-input').click();
-                });
-                document.getElementById('btn-analyze').addEventListener('click', () => this.startAnalysis());
-                document.getElementById('btn-reset').addEventListener('click', () => this.reset());
-            },
+        // ============ EVENT LISTENERS ============
+        function setupEvents() {
+            dom.uploadBtn.addEventListener('click', () => dom.fileInput.click());
+            dom.fileInput.addEventListener('change', (e) => handleFileUpload(e));
+            dom.dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dom.dropZone.classList.add('drag-over');
+            });
+            dom.dropZone.addEventListener('dragleave', () => {
+                dom.dropZone.classList.remove('drag-over');
+            });
+            dom.dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dom.dropZone.classList.remove('drag-over');
+                if (e.dataTransfer.files.length > 0) {
+                    loadImage(e.dataTransfer.files[0]);
+                }
+            });
+            dom.analyzeBtn.addEventListener('click', startAnalysis);
+            dom.resetBtn.addEventListener('click', reset);
+            createSampleButtons();
+        }
 
-            initParticles() {
-                if (!tsParticles) return;
+        // ============ IMAGE LOADING ============
+        function handleFileUpload(e) {
+            if (e.target.files.length > 0) {
+                loadImage(e.target.files[0]);
+            }
+        }
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    drawImage(img);
+                    appState.imageLoaded = true;
+                    dom.analyzeBtn.disabled = false;
+                    dom.statusBar.textContent = 'TARGET ACQUIRED - READY FOR ANALYSIS';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function drawImage(img) {
+            const canvas = dom.imageCanvas;
+            const overlay = dom.overlayCanvas;
+            const container = canvas.parentElement;
+
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            overlay.width = canvas.width;
+            overlay.height = canvas.height;
+
+            const ctx = canvas.getContext('2d');
+            const imgAspect = img.width / img.height;
+            const containerAspect = canvas.width / canvas.height;
+
+            let drawWidth, drawHeight, drawX, drawY;
+
+            if (imgAspect > containerAspect) {
+                drawWidth = canvas.width;
+                drawHeight = canvas.width / imgAspect;
+            } else {
+                drawHeight = canvas.height;
+                drawWidth = canvas.height * imgAspect;
+            }
+
+            drawX = (canvas.width - drawWidth) / 2;
+            drawY = (canvas.height - drawHeight) / 2;
+
+            canvas.drawX = drawX;
+            canvas.drawY = drawY;
+            canvas.drawWidth = drawWidth;
+            canvas.drawHeight = drawHeight;
+
+            ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+            dom.overlayCanvas.getContext('2d').clearRect(0, 0, overlay.width, overlay.height);
+        }
+
+        // ============ ANALYSIS ============
+        async function startAnalysis() {
+            if (appState.analyzing || !appState.imageLoaded) return;
+
+            appState.analyzing = true;
+            dom.analyzeBtn.disabled = true;
+            showModal();
+
+            // Animate progress steps
+            dom.steps.forEach((step, idx) => {
+                step.classList.remove('active');
+                setTimeout(() => {
+                    step.classList.add('active');
+                }, idx * 500 + 200);
+            });
+
+            // Run analysis after 2.5 seconds
+            setTimeout(() => {
+                runAnalysis();
+                hideModal();
+                appState.analyzing = false;
+                dom.analyzeBtn.disabled = false;
+            }, 2500);
+        }
+
+        function runAnalysis() {
+            try {
+                const canvas = dom.imageCanvas;
+                const ctx = canvas.getContext('2d');
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+                const result = analyzeCoconut(imageData);
+                appState.lastResult = result;
+
+                showResults(result);
+                drawOverlay(result);
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Analysis error: ' + error.message);
+                appState.analyzing = false;
+                dom.analyzeBtn.disabled = false;
+            }
+        }
+
+        function analyzeCoconut(imageData) {
+            const { data, width, height } = imageData;
+            let coconutPixels = 0;
+            let brownMinX = width, brownMaxX = 0, brownMinY = height, brownMaxY = 0;
+
+            // Find coconut (brown pixels)
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                if (r > 80 && g > 50 && b > 20 && r > g && g > b && r < 200) {
+                    coconutPixels++;
+                    const idx = i / 4;
+                    const x = idx % width;
+                    const y = Math.floor(idx / width);
+                    brownMinX = Math.min(brownMinX, x);
+                    brownMaxX = Math.max(brownMaxX, x);
+                    brownMinY = Math.min(brownMinY, y);
+                    brownMaxY = Math.max(brownMaxY, y);
+                }
+            }
+
+            const coconutBounds = {
+                x: Math.max(0, brownMinX - 10),
+                y: Math.max(0, brownMinY - 10),
+                w: Math.min(width, brownMaxX - brownMinX + 20),
+                h: Math.min(height, brownMaxY - brownMinY + 20)
+            };
+
+            // Find dark spots (eyes)
+            const eyes = [];
+            const threshold = 100;
+            for (let y = Math.max(0, coconutBounds.y); y < Math.min(height, coconutBounds.y + coconutBounds.h); y += 5) {
+                for (let x = Math.max(0, coconutBounds.x); x < Math.min(width, coconutBounds.x + coconutBounds.w); x += 5) {
+                    const idx = (y * width + x) * 4;
+                    const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+                    if (brightness < threshold) {
+                        eyes.push({ x, y });
+                    }
+                }
+            }
+
+            // Strike point (top of coconut)
+            const strikeX = coconutBounds.x + coconutBounds.w / 2;
+            const strikeY = coconutBounds.y + coconutBounds.h * 0.2;
+
+            // Compute angle
+            let angle = 90;
+            if (eyes.length > 0) {
+                const topEye = eyes.reduce((a, b) => a.y < b.y ? a : b);
+                const angleRad = Math.atan2(topEye.y - strikeY, topEye.x - strikeX);
+                angle = (angleRad * 180 / Math.PI + 90 + 360) % 360;
+                angle = Math.max(70, Math.min(110, angle));
+            }
+
+            // Compute confidence
+            let confidence = 45;
+            if (eyes.length >= 3) confidence += 35;
+            else if (eyes.length >= 1) confidence += 20;
+            if (coconutPixels > width * height * 0.05) confidence += 15;
+            if (angle >= 80 && angle <= 100) confidence += 10;
+            confidence = Math.min(95, confidence);
+
+            return {
+                strikeX: Math.round(strikeX),
+                strikeY: Math.round(strikeY),
+                strikeXPct: (strikeX / width * 100).toFixed(1),
+                strikeYPct: (strikeY / height * 100).toFixed(1),
+                angle: Math.round(angle),
+                confidence: Math.round(confidence),
+                force: confidence > 70 ? 'LIGHT' : confidence > 50 ? 'MEDIUM' : 'FIRM',
+                eyes: eyes.slice(0, 3),
+                coconutBounds,
+                canvasWidth: width,
+                canvasHeight: height
+            };
+        }
+
+        function showResults(result) {
+            dom.resultsLocked.style.display = 'none';
+            dom.resultsContent.style.display = 'flex';
+            dom.posValue.textContent = `${result.strikeXPct}% / ${result.strikeYPct}%`;
+            dom.angleValue.textContent = `${result.angle}°`;
+            dom.confValue.textContent = `${result.confidence}%`;
+            dom.forceValue.textContent = result.force;
+
+            anime({
+                targets: dom.confidenceFill,
+                width: `${result.confidence}%`,
+                duration: 1000
+            });
+
+            const tips = [];
+            if (result.confidence >= 70) tips.push('✓ Excellent target lock');
+            if (result.eyes.length >= 2) tips.push('💡 Multiple eyes detected');
+            tips.push('Use 3-5 light tapping strikes');
+            tips.push('Strike perpendicular to face');
+            tips.push('Chill coconut first for best grip');
+
+            dom.tipsList.innerHTML = tips.map(t => `<div class="tip-item">${t}</div>`).join('');
+
+            if (result.confidence >= 70) {
+                setTimeout(() => confetti(), 500);
+            }
+        }
+
+        function drawOverlay(result) {
+            const canvas = dom.overlayCanvas;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const drawX = canvas.drawX || 0;
+            const drawY = canvas.drawY || 0;
+            const scale = (canvas.drawWidth || canvas.width) / result.canvasWidth;
+
+            const x = drawX + result.strikeX * scale;
+            const y = drawY + result.strikeY * scale;
+
+            // Crosshair
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 40, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x - 50, y);
+            ctx.lineTo(x + 50, y);
+            ctx.moveTo(x, y - 50);
+            ctx.lineTo(x, y + 50);
+            ctx.stroke();
+
+            // Angle arc
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 2;
+            const angleRad = (result.angle - 90) * Math.PI / 180;
+            ctx.beginPath();
+            ctx.arc(x, y, 40, -Math.PI / 2, angleRad);
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '12px Courier New';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${result.angle}°`, x, y - 55);
+
+            // Eye markers
+            result.eyes.forEach((eye, idx) => {
+                const ex = drawX + eye.x * scale;
+                const ey = drawY + eye.y * scale;
+                ctx.strokeStyle = '#ff6b35';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(ex, ey, 12, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+        }
+
+        function reset() {
+            appState.imageLoaded = false;
+            appState.analyzing = false;
+            appState.lastResult = null;
+            dom.analyzeBtn.disabled = true;
+            dom.statusBar.textContent = 'AWAITING TARGET ACQUISITION';
+            dom.resultsLocked.style.display = 'flex';
+            dom.resultsContent.style.display = 'none';
+            dom.imageCanvas.getContext('2d').clearRect(0, 0, dom.imageCanvas.width, dom.imageCanvas.height);
+            dom.overlayCanvas.getContext('2d').clearRect(0, 0, dom.overlayCanvas.width, dom.overlayCanvas.height);
+        }
+
+        // ============ MODAL ============
+        function showModal() {
+            dom.scanModal.classList.add('show');
+        }
+
+        function hideModal() {
+            dom.scanModal.classList.remove('show');
+        }
+
+        // ============ SAMPLE IMAGES ============
+        function createSampleButtons() {
+            for (let i = 0; i < 3; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'sample-btn';
+                btn.innerHTML = createCoconutSVG(['#8B4513', '#A0522D', '#9B6B47'][i]);
+                btn.onclick = () => loadSampleImage(i);
+                dom.samples.appendChild(btn);
+            }
+        }
+
+        function createCoconutSVG(color) {
+            return `<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="25" cy="25" rx="20" ry="22" fill="${color}" stroke="#654321" stroke-width="0.5"/>
+                <circle cx="18" cy="15" r="2.5" fill="#333"/>
+                <circle cx="25" cy="12" r="2.5" fill="#333"/>
+                <circle cx="32" cy="15" r="2.5" fill="#333"/>
+            </svg>`;
+        }
+
+        function loadSampleImage(idx) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+
+            // Brown coconut
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.ellipse(150, 150, 80, 100, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Highlight
+            ctx.fillStyle = 'rgba(255, 255, 200, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(100, 80, 40, 50, -0.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#333';
+            [[110, 140], [150, 125], [190, 140]].forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.ellipse(x, y, 8, 12, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            canvas.toBlob(blob => {
+                const file = new File([blob], 'sample.png', { type: 'image/png' });
+                loadImage(file);
+            });
+        }
+
+        // ============ INIT PARTICLES ============
+        function initParticles() {
+            if (typeof tsParticles !== 'undefined') {
                 tsParticles.load('particles-bg', {
                     particles: {
                         number: { value: window.innerWidth < 768 ? 15 : 30 },
@@ -740,636 +963,17 @@
                             speed: 0.5,
                             direction: 'none',
                             random: true,
-                            straight: false,
                             outModes: { default: 'bounce' }
                         }
                     }
                 });
-            },
-
-            setState(newState) {
-                this.state = newState;
-                if (newState === 'loaded') {
-                    document.getElementById('btn-analyze').disabled = false;
-                    document.getElementById('analysis-status-bar').textContent = 'TARGET ACQUIRED - READY FOR ANALYSIS';
-                } else if (newState === 'idle') {
-                    document.getElementById('btn-analyze').disabled = true;
-                    document.getElementById('analysis-status-bar').textContent = 'AWAITING TARGET ACQUISITION';
-                }
-            },
-
-            startAnalysis() {
-                this.showScanModal();
-                setTimeout(() => this.runAnalysis(), 2500);
-            },
-
-            showScanModal() {
-                const modal = document.getElementById('scan-modal');
-                modal.hidden = false;
-                anime.set(modal, { opacity: 0 });
-                anime({ targets: modal, opacity: 1, duration: 400 });
-
-                // Animate progress steps
-                const steps = document.querySelectorAll('.progress-step');
-                steps.forEach((step, idx) => {
-                    step.classList.remove('active');
-                    anime({
-                        targets: step,
-                        duration: 400,
-                        delay: idx * 500,
-                        complete: () => step.classList.add('active')
-                    });
-                });
-            },
-
-            runAnalysis() {
-                try {
-                    const imageData = ImageLoader.getImageData();
-                    if (!imageData || !imageData.data) {
-                        throw new Error('No image data available');
-                    }
-                    const result = CoconutAnalyzer.analyze(imageData);
-
-                    setTimeout(() => {
-                        const modal = document.getElementById('scan-modal');
-                        if (modal) modal.hidden = true;
-                        this.showResults(result);
-                    }, 500);
-                } catch (error) {
-                    console.error('Analysis error:', error);
-                    document.getElementById('scan-modal').hidden = true;
-                    alert('Analysis error: ' + error.message);
-                }
-            },
-
-            showResults(result) {
-                console.log('Showing results:', result);
-                const placeholder = document.getElementById('results-placeholder');
-                const resultsData = document.getElementById('results-data');
-
-                if (placeholder) placeholder.hidden = true;
-                if (resultsData) resultsData.hidden = false;
-
-                ResultsPresenter.display(result);
-                OverlayRenderer.drawResult(result);
-
-                if (result.confidence >= 80) {
-                    try {
-                        confetti();
-                    } catch (e) {
-                        console.log('Confetti not available');
-                    }
-                }
-            },
-
-            reset() {
-                this.state = 'idle';
-                document.getElementById('results-placeholder').hidden = false;
-                document.getElementById('results-data').hidden = true;
-                document.getElementById('btn-analyze').disabled = true;
-                document.getElementById('analysis-status-bar').textContent = 'AWAITING TARGET ACQUISITION';
-
-                const imageCanvas = document.getElementById('image-canvas');
-                const ctx = imageCanvas.getContext('2d');
-                ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-
-                const overlayCanvas = document.getElementById('overlay-canvas');
-                const overlayCtx = overlayCanvas.getContext('2d');
-                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             }
-        };
+        }
 
-        // ============ UPLOAD HANDLER ============
-        const UploadHandler = {
-            init() {
-                const dropZone = document.getElementById('drop-zone');
-                const fileInput = document.getElementById('file-input') || this.createFileInput();
-
-                dropZone.addEventListener('dragover', (e) => this.handleDragOver(e));
-                dropZone.addEventListener('dragleave', () => this.handleDragLeave());
-                dropZone.addEventListener('drop', (e) => this.handleDrop(e));
-                dropZone.addEventListener('click', () => fileInput.click());
-
-                fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-            },
-
-            createFileInput() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.id = 'file-input';
-                input.accept = 'image/*';
-                document.body.appendChild(input);
-                return input;
-            },
-
-            handleDragOver(e) {
-                e.preventDefault();
-                document.getElementById('drop-zone').classList.add('drag-over');
-            },
-
-            handleDragLeave() {
-                document.getElementById('drop-zone').classList.remove('drag-over');
-            },
-
-            handleDrop(e) {
-                e.preventDefault();
-                document.getElementById('drop-zone').classList.remove('drag-over');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) this.handleFile(files[0]);
-            },
-
-            handleFileSelect(e) {
-                if (e.target.files.length > 0) this.handleFile(e.target.files[0]);
-            },
-
-            handleFile(file) {
-                if (!file.type.startsWith('image/')) {
-                    alert('Please select an image file');
-                    return;
-                }
-                ImageLoader.load(file);
-                UIController.setState('loaded');
-            }
-        };
-
-        // ============ IMAGE LOADER ============
-        const ImageLoader = {
-            scale: 1,
-            offsetX: 0,
-            offsetY: 0,
-
-            load(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => this.drawImageToCanvas(img);
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            },
-
-            drawImageToCanvas(img) {
-                const canvas = document.getElementById('image-canvas');
-                const overlayCanvas = document.getElementById('overlay-canvas');
-                const container = canvas.parentElement;
-
-                canvas.width = container.clientWidth;
-                canvas.height = container.clientHeight;
-                overlayCanvas.width = canvas.width;
-                overlayCanvas.height = canvas.height;
-
-                const ctx = canvas.getContext('2d');
-                const imgAspect = img.width / img.height;
-                const containerAspect = canvas.width / canvas.height;
-
-                let drawWidth, drawHeight, drawX, drawY;
-
-                if (imgAspect > containerAspect) {
-                    drawWidth = canvas.width;
-                    drawHeight = canvas.width / imgAspect;
-                } else {
-                    drawHeight = canvas.height;
-                    drawWidth = canvas.height * imgAspect;
-                }
-
-                drawX = (canvas.width - drawWidth) / 2;
-                drawY = (canvas.height - drawHeight) / 2;
-
-                this.scale = drawWidth / img.width;
-                this.offsetX = drawX;
-                this.offsetY = drawY;
-
-                ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-            },
-
-            getImageData() {
-                const canvas = document.getElementById('image-canvas');
-                const ctx = canvas.getContext('2d');
-                return ctx.getImageData(0, 0, canvas.width, canvas.height);
-            }
-        };
-
-        // ============ COCONUT ANALYZER ============
-        const CoconutAnalyzer = {
-            analyze(imageData) {
-                try {
-                    const grayscale = this.toGrayscale(imageData);
-                    const coconutBounds = this.detectCoconutBounds(imageData);
-                    const eyes = this.findEyeRegions(grayscale, coconutBounds);
-                    const strikePoint = this.computeStrikePoint(eyes, coconutBounds);
-                    const angle = this.computeAngle(strikePoint, imageData, coconutBounds);
-                    const confidence = this.computeConfidence(eyes, coconutBounds, angle);
-
-                    return {
-                        strikePoint,
-                        strikePct: {
-                            x: (strikePoint.x / imageData.width * 100).toFixed(1),
-                            y: (strikePoint.y / imageData.height * 100).toFixed(1)
-                        },
-                        angle: Math.round(angle),
-                        force: confidence > 75 ? 'LIGHT' : confidence > 50 ? 'MEDIUM' : 'FIRM',
-                        confidence: Math.round(confidence),
-                        eyesFound: eyes.length,
-                        eyePositions: eyes,
-                        coconutBounds,
-                        fallback: eyes.length === 0
-                    };
-                } catch (error) {
-                    console.error('CoconutAnalyzer error:', error);
-                    // Return safe fallback result
-                    const centerX = imageData.width / 2;
-                    const centerY = imageData.height / 2;
-                    return {
-                        strikePoint: { x: centerX, y: centerY * 0.7 },
-                        strikePct: { x: '50.0', y: '35.0' },
-                        angle: 90,
-                        force: 'MEDIUM',
-                        confidence: 45,
-                        eyesFound: 0,
-                        eyePositions: [],
-                        coconutBounds: { x: centerX / 2, y: centerY / 2, w: centerX, h: centerY },
-                        fallback: true
-                    };
-                }
-            },
-
-            toGrayscale(imageData) {
-                const data = imageData.data;
-                const gray = new Uint8ClampedArray(imageData.width * imageData.height);
-                for (let i = 0, j = 0; i < data.length; i += 4, j++) {
-                    gray[j] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                }
-                return { data: gray, width: imageData.width, height: imageData.height };
-            },
-
-            blur(gray) {
-                const result = new Uint8ClampedArray(gray.data);
-                const { width, height } = gray;
-
-                for (let y = 1; y < height - 1; y++) {
-                    for (let x = 1; x < width - 1; x++) {
-                        const idx = y * width + x;
-                        let sum = 0;
-                        for (let dy = -1; dy <= 1; dy++) {
-                            for (let dx = -1; dx <= 1; dx++) {
-                                sum += gray.data[(y + dy) * width + (x + dx)];
-                            }
-                        }
-                        result[idx] = Math.round(sum / 9);
-                    }
-                }
-                return { data: result, width, height };
-            },
-
-            detectCoconutBounds(imageData) {
-                const { data, width, height } = imageData;
-                let minX = width, maxX = 0, minY = height, maxY = 0;
-                let brownCount = 0;
-
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i], g = data[i + 1], b = data[i + 2];
-                    const isBrown = r > 80 && g > 50 && b > 20 && r > g * 1.1 && g > b * 1.1 && r < 200;
-
-                    if (isBrown) {
-                        const idx = i / 4;
-                        const x = idx % width;
-                        const y = Math.floor(idx / width);
-                        minX = Math.min(minX, x);
-                        maxX = Math.max(maxX, x);
-                        minY = Math.min(minY, y);
-                        maxY = Math.max(maxY, y);
-                        brownCount++;
-                    }
-                }
-
-                if (brownCount < width * height * 0.01) {
-                    return { x: width / 4, y: height / 4, w: width / 2, h: height / 2 };
-                }
-
-                return {
-                    x: Math.max(0, minX - 10),
-                    y: Math.max(0, minY - 10),
-                    w: Math.min(width, maxX - minX + 20),
-                    h: Math.min(height, maxY - minY + 20)
-                };
-            },
-
-            findEyeRegions(gray, bounds) {
-                const eyes = [];
-                const { x, y, w, h } = bounds;
-                const threshold = 80;
-                const minDist = 20;
-
-                for (let ey = Math.max(0, y); ey < Math.min(gray.height, y + h); ey += 3) {
-                    for (let ex = Math.max(0, x); ex < Math.min(gray.width, x + w); ex += 3) {
-                        const val = gray.data[ey * gray.width + ex];
-                        if (val < threshold) {
-                            // Check distance to existing eyes
-                            let tooClose = false;
-                            for (let e of eyes) {
-                                if (Math.hypot(e.x - ex, e.y - ey) < minDist) {
-                                    tooClose = true;
-                                    break;
-                                }
-                            }
-                            if (!tooClose) {
-                                eyes.push({ x: Math.round(ex), y: Math.round(ey) });
-                            }
-                        }
-                    }
-                }
-
-                return eyes.length > 3 ? eyes.slice(0, 3) : eyes;
-            },
-
-            computeStrikePoint(eyes, bounds) {
-                if (eyes.length > 0) {
-                    const topEye = eyes.reduce((a, b) => a.y < b.y ? a : b);
-                    return { x: topEye.x, y: topEye.y };
-                }
-                return { x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h * 0.25 };
-            },
-
-            computeAngle(strikePoint, imageData, bounds) {
-                let maxBrightness = 0;
-                let highlightX = strikePoint.x, highlightY = strikePoint.y;
-                const { x, y, w, h } = bounds;
-                const data = imageData.data;
-
-                for (let py = Math.max(0, y); py < Math.min(imageData.height, y + h); py++) {
-                    for (let px = Math.max(0, x); px < Math.min(imageData.width, x + w); px++) {
-                        const idx = (py * imageData.width + px) * 4;
-                        const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-                        if (brightness > maxBrightness && brightness > 180) {
-                            maxBrightness = brightness;
-                            highlightX = px;
-                            highlightY = py;
-                        }
-                    }
-                }
-
-                const angle = Math.atan2(highlightY - strikePoint.y, highlightX - strikePoint.x) * 180 / Math.PI + 90;
-                return Math.max(70, Math.min(110, angle % 360));
-            },
-
-            computeConfidence(eyes, bounds, angle) {
-                let score = 0;
-                if (eyes.length >= 3) score += 40;
-                else if (eyes.length >= 1) score += 20;
-                score += 30; // coconut detected
-                score += 15; // highlight assumed found
-                if (angle >= 75 && angle <= 105) score += 10;
-                return Math.min(95, score);
-            }
-        };
-
-        // ============ OVERLAY RENDERER ============
-        const OverlayRenderer = {
-            animationId: null,
-            result: null,
-
-            init(result) {
-                this.result = result;
-            },
-
-            drawResult(result) {
-                try {
-                    const canvas = document.getElementById('overlay-canvas');
-                    const ctx = canvas.getContext('2d');
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    this.init(result);
-                    this.drawStrikeZone(ctx, result);
-                    this.drawAngleArc(ctx, result);
-                    this.drawEyeMarkers(ctx, result);
-                    this.animationLoop(ctx);
-                } catch (error) {
-                    console.error('OverlayRenderer error:', error);
-                }
-            },
-
-            drawStrikeZone(ctx, result) {
-                const { strikePoint } = result;
-                const scale = ImageLoader.scale;
-                const x = ImageLoader.offsetX + strikePoint.x * scale;
-                const y = ImageLoader.offsetY + strikePoint.y * scale;
-
-                // Outer ring
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(x, y, 40, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.shadowColor = '#00e5ff';
-                ctx.shadowBlur = 20;
-
-                // Inner dot
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
-                // Crosshair
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(x - 50, y);
-                ctx.lineTo(x - 15, y);
-                ctx.moveTo(x + 15, y);
-                ctx.lineTo(x + 50, y);
-                ctx.moveTo(x, y - 50);
-                ctx.lineTo(x, y - 15);
-                ctx.moveTo(x, y + 15);
-                ctx.lineTo(x, y + 50);
-                ctx.stroke();
-            },
-
-            drawAngleArc(ctx, result) {
-                const { strikePoint, angle } = result;
-                const scale = ImageLoader.scale;
-                const x = ImageLoader.offsetX + strikePoint.x * scale;
-                const y = ImageLoader.offsetY + strikePoint.y * scale;
-
-                // Baseline
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(x - 60, y);
-                ctx.lineTo(x + 60, y);
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                // Arc
-                const angleRad = (angle - 90) * Math.PI / 180;
-                ctx.strokeStyle = '#ffd700';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(x, y, 40, -Math.PI / 2, angleRad);
-                ctx.stroke();
-
-                // Label
-                ctx.fillStyle = '#ffd700';
-                ctx.font = '12px Courier New';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${angle.toString().padStart(3, '0')}°`, x, y - 55);
-            },
-
-            drawEyeMarkers(ctx, result) {
-                const { eyePositions } = result;
-                const scale = ImageLoader.scale;
-
-                eyePositions.forEach((eye, idx) => {
-                    const x = ImageLoader.offsetX + eye.x * scale;
-                    const y = ImageLoader.offsetY + eye.y * scale;
-
-                    ctx.strokeStyle = '#ff6b35';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 12, 0, Math.PI * 2);
-                    ctx.stroke();
-
-                    ctx.fillStyle = '#ff6b35';
-                    ctx.font = '10px Courier New';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(`EYE-${idx + 1}`, x, y + 20);
-                });
-            },
-
-            animationLoop(ctx) {
-                cancelAnimationFrame(this.animationId);
-                // Could add more dynamic animations here
-            }
-        };
-
-        // ============ RESULTS PRESENTER ============
-        const ResultsPresenter = {
-            display(result) {
-                document.getElementById('val-position').textContent = `${result.strikePct.x}% / ${result.strikePct.y}%`;
-                document.getElementById('val-angle').textContent = `${result.angle}°`;
-                document.getElementById('val-confidence').textContent = `${result.confidence}%`;
-                document.getElementById('val-force').textContent = result.force;
-
-                const confidenceBar = document.getElementById('confidence-fill');
-                anime({
-                    targets: confidenceBar,
-                    width: `${result.confidence}%`,
-                    duration: 1000,
-                    easing: 'easeOutQuad'
-                });
-
-                this.generateTips(result);
-            },
-
-            generateTips(result) {
-                const tips = [];
-
-                if (result.confidence >= 80) {
-                    tips.push("✓ Target locked. Strike location is optimal.");
-                    tips.push("Use the heel of your machete for controlled taps.");
-                }
-
-                if (result.eyesFound >= 2) {
-                    tips.push("💡 Multiple eyes detected - lowest resistance zone.");
-                }
-
-                if (result.angle < 75 || result.angle > 105) {
-                    tips.push("⚠ Steep angle detected. Adjust coconut orientation.");
-                }
-
-                if (result.force === 'LIGHT') {
-                    tips.push("Apply 3-5 light tapping strikes at the marked zone.");
-                } else if (result.force === 'MEDIUM') {
-                    tips.push("Use medium-pressure strikes, 5-7 taps total.");
-                }
-
-                tips.push("Score a circle around the hole, then push through for clean opening.");
-
-                const tipsBox = document.getElementById('tips-box');
-                tipsBox.innerHTML = '<div class="tips-label">⚡ TACTICAL TIPS</div>';
-                tips.forEach(tip => {
-                    const tipEl = document.createElement('div');
-                    tipEl.className = 'tip-item';
-                    tipEl.textContent = tip;
-                    tipsBox.appendChild(tipEl);
-                });
-            }
-        };
-
-        // ============ SAMPLE IMAGE GENERATOR ============
-        const SampleImages = {
-            init() {
-                this.createSampleImages();
-            },
-
-            createSampleImages() {
-                const samples = [
-                    { id: 'sample-1', color: '#8B4513' },
-                    { id: 'sample-2', color: '#A0522D' },
-                    { id: 'sample-3', color: '#9B6B47' }
-                ];
-
-                samples.forEach((sample, idx) => {
-                    const svg = this.createCoconutSVG(sample.color);
-                    const el = document.getElementById(sample.id);
-                    if (el) {
-                        el.innerHTML = svg;
-                        el.addEventListener('click', () => this.loadSample(idx));
-                    }
-                });
-            },
-
-            createCoconutSVG(color) {
-                return `
-                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                        <ellipse cx="25" cy="25" rx="20" ry="22" fill="${color}" stroke="#654321" stroke-width="0.5"/>
-                        <circle cx="18" cy="15" r="2.5" fill="#333"/>
-                        <circle cx="25" cy="12" r="2.5" fill="#333"/>
-                        <circle cx="32" cy="15" r="2.5" fill="#333"/>
-                    </svg>
-                `;
-            },
-
-            loadSample(idx) {
-                const canvas = document.createElement('canvas');
-                canvas.width = 300;
-                canvas.height = 300;
-                const ctx = canvas.getContext('2d');
-
-                // Draw coconut-like image
-                ctx.fillStyle = '#8B4513';
-                ctx.beginPath();
-                ctx.ellipse(150, 150, 80, 100, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Add highlight
-                ctx.fillStyle = 'rgba(255, 255, 200, 0.3)';
-                ctx.beginPath();
-                ctx.ellipse(100, 80, 40, 50, -0.4, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Add eyes
-                ctx.fillStyle = '#333';
-                [[110, 140], [150, 125], [190, 140]].forEach(([x, y]) => {
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, 8, 12, 0.3, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                // Convert to blob and create file
-                canvas.toBlob(blob => {
-                    const file = new File([blob], 'sample-coconut.png', { type: 'image/png' });
-                    UploadHandler.handleFile(file);
-                });
-            }
-        };
-
-        // ============ INITIALIZATION ============
+        // ============ INITIALIZE ============
         window.addEventListener('DOMContentLoaded', () => {
-            UIController.init();
-            UploadHandler.init();
-            SampleImages.init();
+            setupEvents();
+            initParticles();
         });
     </script>
 </body>
