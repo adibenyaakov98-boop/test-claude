@@ -783,13 +783,23 @@
             },
 
             runAnalysis() {
-                const imageData = ImageLoader.getImageData();
-                const result = CoconutAnalyzer.analyze(imageData);
+                try {
+                    const imageData = ImageLoader.getImageData();
+                    if (!imageData || !imageData.data) {
+                        throw new Error('No image data available');
+                    }
+                    const result = CoconutAnalyzer.analyze(imageData);
 
-                setTimeout(() => {
+                    setTimeout(() => {
+                        const modal = document.getElementById('scan-modal');
+                        if (modal) modal.hidden = true;
+                        this.showResults(result);
+                    }, 500);
+                } catch (error) {
+                    console.error('Analysis error:', error);
                     document.getElementById('scan-modal').hidden = true;
-                    this.showResults(result);
-                }, 500);
+                    alert('Analysis error: ' + error.message);
+                }
             },
 
             showResults(result) {
