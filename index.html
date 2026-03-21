@@ -803,14 +803,22 @@
             },
 
             showResults(result) {
-                document.getElementById('results-placeholder').hidden = true;
-                document.getElementById('results-data').hidden = false;
+                console.log('Showing results:', result);
+                const placeholder = document.getElementById('results-placeholder');
+                const resultsData = document.getElementById('results-data');
+
+                if (placeholder) placeholder.hidden = true;
+                if (resultsData) resultsData.hidden = false;
 
                 ResultsPresenter.display(result);
                 OverlayRenderer.drawResult(result);
 
                 if (result.confidence >= 80) {
-                    confetti();
+                    try {
+                        confetti();
+                    } catch (e) {
+                        console.log('Confetti not available');
+                    }
                 }
             },
 
