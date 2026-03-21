@@ -6,12 +6,12 @@ This file provides guidance to Claude Code when working on this project.
 
 **Automatic GitHub Connection & Push**
 
-Every project is automatically:
-1. Initialized with git and connected to a public GitHub repository under `adibenyaakov98-boop`
-2. Committed and pushed after every file change to preserve complete development history
-3. No manual commits needed—Claude handles all version control automatically
+Claude automatically:
+1. Initializes git locally and commits after each file change
+2. Pushes to a public GitHub repository under `adibenyaakov98-boop`
+3. Handles version control—no manual commits needed
 
-This ensures all work is tracked with full history and never lost.
+**Repository:** https://github.com/adibenyaakov98-boop/test-claude
 
 ## Claude Code Settings
 
