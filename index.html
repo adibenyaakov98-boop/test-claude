@@ -1058,17 +1058,28 @@
                 const eyes = [];
                 const { x, y, w, h } = bounds;
                 const threshold = 80;
+                const minDist = 20;
 
-                for (let ey = Math.max(0, y); ey < Math.min(gray.height, y + h); ey++) {
-                    for (let ex = Math.max(0, x); ex < Math.min(gray.width, x + w); ex++) {
+                for (let ey = Math.max(0, y); ey < Math.min(gray.height, y + h); ey += 3) {
+                    for (let ex = Math.max(0, x); ex < Math.min(gray.width, x + w); ex += 3) {
                         const val = gray.data[ey * gray.width + ex];
-                        if (val < threshold && !eyes.some(e => Math.hypot(e.x - ex, e.y - ey) < 15)) {
-                            eyes.push({ x: Math.round(ex), y: Math.round(ey) });
+                        if (val < threshold) {
+                            // Check distance to existing eyes
+                            let tooClose = false;
+                            for (let e of eyes) {
+                                if (Math.hypot(e.x - ex, e.y - ey) < minDist) {
+                                    tooClose = true;
+                                    break;
+                                }
+                            }
+                            if (!tooClose) {
+                                eyes.push({ x: Math.round(ex), y: Math.round(ey) });
+                            }
                         }
                     }
                 }
 
-                return eyes.slice(0, 3);
+                return eyes.length > 3 ? eyes.slice(0, 3) : eyes;
             },
 
             computeStrikePoint(eyes, bounds) {
