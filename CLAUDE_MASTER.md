@@ -94,6 +94,17 @@ Once set up, all changes are automatically committed and pushed to preserve comp
 ### Code Style
 - [Any specific conventions or patterns to follow]
 
+## Commit Template
+
+All commits should use this format (Claude will NOT be added as co-author):
+```
+Brief description of changes
+
+Detailed explanation if needed.
+```
+
+Do NOT include `Co-Authored-By: Claude` lines in commits.
+
 ## What Claude Should Focus On
 
 1. **Quality first**: Write clean, tested code over quick solutions
