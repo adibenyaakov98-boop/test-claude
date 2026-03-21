@@ -834,51 +834,122 @@
             const x = drawX + result.strikeX * scale;
             const y = drawY + result.strikeY * scale;
 
-            // Crosshair
-            ctx.strokeStyle = '#00e5ff';
-            ctx.lineWidth = 2;
+            // Semi-transparent overlay to darken areas except target
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(x - 80, y - 80, 160, 160);
+
+            // PRIMARY TARGET MARKER - Multiple glowing rings
+            ctx.strokeStyle = '#ff6b35';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ff6b35';
+            ctx.shadowBlur = 20;
             ctx.beginPath();
-            ctx.arc(x, y, 40, 0, Math.PI * 2);
+            ctx.arc(x, y, 60, 0, Math.PI * 2);
             ctx.stroke();
 
-            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#00e5ff';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = '#00e5ff';
+            ctx.shadowBlur = 15;
             ctx.beginPath();
-            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.arc(x, y, 45, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#00ff88';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = '#00ff88';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(x, y, 30, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Central target - bright red
+            ctx.fillStyle = '#ff1111';
+            ctx.shadowColor = '#ff1111';
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, Math.PI * 2);
             ctx.fill();
 
-            ctx.strokeStyle = '#00e5ff';
-            ctx.lineWidth = 1;
+            ctx.fillStyle = '#ffff00';
             ctx.beginPath();
-            ctx.moveTo(x - 50, y);
-            ctx.lineTo(x + 50, y);
-            ctx.moveTo(x, y - 50);
-            ctx.lineTo(x, y + 50);
-            ctx.stroke();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
 
-            // Angle arc
-            ctx.strokeStyle = '#ffd700';
+            // CROSSHAIR LINES
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#00ff88';
             ctx.lineWidth = 2;
-            const angleRad = (result.angle - 90) * Math.PI / 180;
+            ctx.setLineDash([5, 5]);
             ctx.beginPath();
-            ctx.arc(x, y, 40, -Math.PI / 2, angleRad);
+            ctx.moveTo(x - 100, y);
+            ctx.lineTo(x + 100, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y - 100);
+            ctx.lineTo(x, y + 100);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // ANGLE INDICATOR - Arrow showing cut direction
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 10;
+            const angleRad = (result.angle - 90) * Math.PI / 180;
+            const arrowLen = 70;
+            const arrowX = x + Math.cos(angleRad) * arrowLen;
+            const arrowY = y + Math.sin(angleRad) * arrowLen;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(arrowX, arrowY);
             ctx.stroke();
 
-            // Label
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '12px Courier New';
-            ctx.textAlign = 'center';
-            ctx.fillText(`${result.angle}°`, x, y - 55);
+            const headlen = 15;
+            const angle1 = angleRad - Math.PI / 6;
+            const angle2 = angleRad + Math.PI / 6;
+            ctx.beginPath();
+            ctx.moveTo(arrowX, arrowY);
+            ctx.lineTo(arrowX - headlen * Math.cos(angle1), arrowY - headlen * Math.sin(angle1));
+            ctx.moveTo(arrowX, arrowY);
+            ctx.lineTo(arrowX - headlen * Math.cos(angle2), arrowY - headlen * Math.sin(angle2));
+            ctx.stroke();
 
-            // Eye markers
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 16px Courier New';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 10;
+            ctx.fillText(`${result.angle}°`, arrowX + 20, arrowY - 10);
+
+            // CUT INSTRUCTIONS
+            ctx.fillStyle = '#00ff88';
+            ctx.font = 'bold 14px Courier New';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#00ff88';
+            ctx.shadowBlur = 10;
+            ctx.fillText('⟿ CUT HERE ⟿', x, y + 95);
+
+            // EYE MARKERS
             result.eyes.forEach((eye, idx) => {
                 const ex = drawX + eye.x * scale;
                 const ey = drawY + eye.y * scale;
                 ctx.strokeStyle = '#ff6b35';
                 ctx.lineWidth = 2;
+                ctx.shadowColor = '#ff6b35';
+                ctx.shadowBlur = 8;
                 ctx.beginPath();
-                ctx.arc(ex, ey, 12, 0, Math.PI * 2);
+                ctx.arc(ex, ey, 15, 0, Math.PI * 2);
                 ctx.stroke();
+                ctx.fillStyle = '#ff6b35';
+                ctx.font = '10px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText(`EYE`, ex, ey + 25);
             });
+
+            ctx.shadowBlur = 0;
         }
 
         function reset() {
