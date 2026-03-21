@@ -774,11 +774,10 @@
             dom.confValue.textContent = `${result.confidence}%`;
             dom.forceValue.textContent = result.force;
 
-            anime({
-                targets: dom.confidenceFill,
-                width: `${result.confidence}%`,
-                duration: 1000
-            });
+            // Animate confidence bar with CSS transition
+            setTimeout(() => {
+                dom.confidenceFill.style.width = `${result.confidence}%`;
+            }, 100);
 
             const tips = [];
             if (result.confidence >= 70) tips.push('✓ Excellent target lock');
@@ -790,7 +789,11 @@
             dom.tipsList.innerHTML = tips.map(t => `<div class="tip-item">${t}</div>`).join('');
 
             if (result.confidence >= 70) {
-                setTimeout(() => confetti(), 500);
+                try {
+                    setTimeout(() => confetti(), 500);
+                } catch (e) {
+                    console.log('Confetti not available');
+                }
             }
         }
 
