@@ -913,7 +913,12 @@
         function showResults(result) {
             dom.resultsLocked.style.display = 'none';
             dom.resultsContent.style.display = 'flex';
-            dom.posValue.textContent = `${result.strikeXPct}% / ${result.strikeYPct}%`;
+
+            // Calculate distance from top in cm (assuming standard coconut ~15cm tall)
+            const coconutHeightCm = 15;
+            const distanceFromTopCm = (parseFloat(result.strikeYPct) / 100) * coconutHeightCm;
+            dom.posValue.textContent = `${distanceFromTopCm.toFixed(1)} cm from top`;
+
             dom.angleValue.textContent = `${result.angle}°`;
             dom.confValue.textContent = `${result.confidence}%`;
             dom.forceValue.textContent = result.force;
