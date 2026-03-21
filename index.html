@@ -944,28 +944,45 @@
         // ============ COCONUT ANALYZER ============
         const CoconutAnalyzer = {
             analyze(imageData) {
-                const grayscale = this.toGrayscale(imageData);
-                const blurred = this.blur(grayscale);
-                const coconutBounds = this.detectCoconutBounds(imageData);
-                const eyes = this.findEyeRegions(grayscale, coconutBounds);
-                const strikePoint = this.computeStrikePoint(eyes, coconutBounds);
-                const angle = this.computeAngle(strikePoint, imageData, coconutBounds);
-                const confidence = this.computeConfidence(eyes, coconutBounds, angle);
+                try {
+                    const grayscale = this.toGrayscale(imageData);
+                    const coconutBounds = this.detectCoconutBounds(imageData);
+                    const eyes = this.findEyeRegions(grayscale, coconutBounds);
+                    const strikePoint = this.computeStrikePoint(eyes, coconutBounds);
+                    const angle = this.computeAngle(strikePoint, imageData, coconutBounds);
+                    const confidence = this.computeConfidence(eyes, coconutBounds, angle);
 
-                return {
-                    strikePoint,
-                    strikePct: {
-                        x: (strikePoint.x / imageData.width * 100).toFixed(1),
-                        y: (strikePoint.y / imageData.height * 100).toFixed(1)
-                    },
-                    angle: Math.round(angle),
-                    force: confidence > 75 ? 'LIGHT' : confidence > 50 ? 'MEDIUM' : 'FIRM',
-                    confidence: Math.round(confidence),
-                    eyesFound: eyes.length,
-                    eyePositions: eyes,
-                    coconutBounds,
-                    fallback: eyes.length === 0
-                };
+                    return {
+                        strikePoint,
+                        strikePct: {
+                            x: (strikePoint.x / imageData.width * 100).toFixed(1),
+                            y: (strikePoint.y / imageData.height * 100).toFixed(1)
+                        },
+                        angle: Math.round(angle),
+                        force: confidence > 75 ? 'LIGHT' : confidence > 50 ? 'MEDIUM' : 'FIRM',
+                        confidence: Math.round(confidence),
+                        eyesFound: eyes.length,
+                        eyePositions: eyes,
+                        coconutBounds,
+                        fallback: eyes.length === 0
+                    };
+                } catch (error) {
+                    console.error('CoconutAnalyzer error:', error);
+                    // Return safe fallback result
+                    const centerX = imageData.width / 2;
+                    const centerY = imageData.height / 2;
+                    return {
+                        strikePoint: { x: centerX, y: centerY * 0.7 },
+                        strikePct: { x: '50.0', y: '35.0' },
+                        angle: 90,
+                        force: 'MEDIUM',
+                        confidence: 45,
+                        eyesFound: 0,
+                        eyePositions: [],
+                        coconutBounds: { x: centerX / 2, y: centerY / 2, w: centerX, h: centerY },
+                        fallback: true
+                    };
+                }
             },
 
             toGrayscale(imageData) {
