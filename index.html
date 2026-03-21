@@ -590,23 +590,47 @@
 
         // ============ IMAGE LOADING ============
         function handleFileUpload(e) {
+            console.log('File input change event:', e.target.files.length);
             if (e.target.files.length > 0) {
                 loadImage(e.target.files[0]);
             }
         }
 
         function loadImage(file) {
+            console.log('Loading image:', file.name, file.size, file.type);
+
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                return;
+            }
+
             const reader = new FileReader();
+
+            reader.onerror = () => {
+                console.error('FileReader error:', reader.error);
+                alert('Error reading file');
+            };
+
             reader.onload = (e) => {
+                console.log('FileReader loaded, creating image');
                 const img = new Image();
+
+                img.onerror = () => {
+                    console.error('Image load error');
+                    alert('Error loading image');
+                };
+
                 img.onload = () => {
+                    console.log('Image loaded:', img.width, 'x', img.height);
                     drawImage(img);
                     appState.imageLoaded = true;
                     dom.analyzeBtn.disabled = false;
                     dom.statusBar.textContent = 'TARGET ACQUIRED - READY FOR ANALYSIS';
                 };
+
                 img.src = e.target.result;
             };
+
             reader.readAsDataURL(file);
         }
 
