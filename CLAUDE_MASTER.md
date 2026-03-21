@@ -6,12 +6,38 @@ This file provides guidance to Claude Code when working on this project.
 
 **Automatic GitHub Connection & Push**
 
-Every project is automatically:
-1. Initialized with git and connected to a public GitHub repository under `adibenyaakov98-boop`
-2. Committed and pushed after every file change to preserve complete development history
-3. No manual commits needed—Claude handles all version control automatically
+Claude automatically:
+1. Initializes git locally and commits after each file change
+2. Pushes to a public GitHub repository under `adibenyaakov98-boop`
+3. Handles version control—no manual commits needed
 
-This ensures all work is tracked with full history and never lost.
+**SETUP REQUIRED - First Time Only:**
+Before Claude can push to GitHub, you must:
+
+1. **Create GitHub Repository** (using GitHub CLI):
+   ```bash
+   gh auth login  # if not already authenticated
+   gh repo create <repo-name> --public --source=. --remote=origin --push
+   ```
+   Or create manually on github.com and run:
+   ```bash
+   git remote add origin https://github.com/adibenyaakov98-boop/<repo-name>.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+2. **GitHub CLI Setup** (one-time):
+   - Install: https://cli.github.com
+   - Authenticate: `gh auth login`
+   - Grant these permissions: `repo`, `workflow`, `read:org`
+
+3. **Git Configuration** (one-time):
+   ```bash
+   git config --global user.name "Claude Code"
+   git config --global user.email "noreply@anthropic.com"
+   ```
+
+Once set up, all changes are automatically committed and pushed to preserve complete development history.
 
 ## Claude Code Settings
 
