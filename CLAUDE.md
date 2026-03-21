@@ -1,80 +1,130 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working on this project.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## GitHub Integration
+## Project Overview
 
-**Automatic GitHub Connection & Push**
+**CocoNUT Cracker** - A visual coconut analysis tool built as a single-page HTML application. Users upload coconut images, analyze them with drawing tools, and receive precision metrics about the coconut's characteristics.
 
-Claude automatically:
-1. Initializes git locally and commits after each file change
-2. Pushes to a public GitHub repository under `adibenyaakov98-boop`
-3. Handles version control—no manual commits needed
+**Tech Stack:**
+- Vanilla HTML5 + CSS3 (no build step needed)
+- Canvas API for image drawing and analysis
+- CDN libraries: tsParticles, Anime.js, canvas-confetti
+- Single `index.html` file (self-contained)
 
 **Repository:** https://github.com/adibenyaakov98-boop/test-claude
 
-## Claude Code Settings
+## Running & Development
 
-**Defaults for this project:**
-- Model: `haiku` (or specify your preferred model)
-- Thinking: Enabled for complex tasks
-- Priority: Quality & testing, then documentation
+**To view the application:**
+- Open `index.html` directly in a browser
+- No server or build process required
+- Works offline after initial page load
 
-## Commits
+**To edit:**
+- All code is in `index.html` (styles, HTML, JavaScript)
+- Changes are immediately visible when you refresh the browser
 
-Claude will NOT be added as a co-author on commits. All commits are attributed to you only.
+## Project Architecture
 
-## Quick Start
-
-### Prerequisites
-- [e.g., Node.js 18+, Python 3.10+, Git, etc.]
-
-### Setup
-```bash
-# [Brief setup command if needed]
+### Page Structure (3-Panel Layout)
+```
+┌─────────────────────────────────┐
+│           HEADER                 │
+├──────────┬──────────────┬────────┤
+│  UPLOAD  │   CANVAS     │ RESULTS│
+│  PANEL   │   & STATUS   │ PANEL  │
+│          │              │        │
+└──────────┴──────────────┴────────┘
 ```
 
-## Core Commands
+- **Left Panel**: File upload zone + action buttons
+- **Center Panel**: Canvas for image display + drawing overlay + status bar
+- **Right Panel**: Analysis results (locked until analysis runs)
 
-**Testing** (most important)
-```bash
-# [Test command]
-```
+### JavaScript Architecture
 
-**Development**
-```bash
-# Build/Run: [command]
-# Lint: [command]
-# Format: [command]
-```
+**State Management** (`appState` object):
+- `imageLoaded`: boolean - whether an image is currently loaded
+- `analyzing`: boolean - whether analysis is in progress
+- `lastResult`: object - cached results from last analysis
+- Centralized state prevents sync issues
 
-## Project Structure
+**Event System:**
+- File upload trigger → `handleUpload()`
+- Canvas interaction → drawing overlay listeners
+- Analysis button → `runAnalysis()` (shows modal, calls worker functions)
+- Reset button → `reset()`
 
-```
-[project-root]/
-├── [directory]     - [Brief purpose]
-├── [directory]     - [Brief purpose]
-└── [directory]     - [Brief purpose]
-```
+**DOM Caching** (`dom` object):
+- All element references cached at startup (e.g., `dom.uploadBtn`, `dom.imageCanvas`)
+- Prevents repeated `querySelector()` calls
+- Initialized in `setupDOM()`
 
-## Code Standards
+**Canvas Layers:**
+- `imageCanvas`: displays uploaded image (background)
+- `overlayCanvas`: drawing overlay on top (interactive, cursor: crosshair)
+- Both canvases are absolutely positioned and overlap
 
-### Testing
-- **Requirement**: Every feature must have tests before deployment
-- **Coverage**: Aim for [X]% coverage on core logic
-- **Run tests**: `[test command]` before committing
+**Modal System:**
+- Loading modal shows during analysis with animated radar spinner
+- Steps animate in sequence using CSS and JavaScript timing
+- `showModal()` / `hideModal()` control visibility
 
-### Documentation
-- Add docstrings/comments for complex logic
-- Update README for user-facing changes
-- Keep code self-documenting (clear variable names, small functions)
+### Styling
 
-### Code Style
-- [Any specific conventions or patterns to follow]
+**Color System (CSS Variables):**
+- Lemonade theme: yellow (#FBBF24, #FCD34D), lime green (#86EFAC), cyan (#06B6D4)
+- Typography: Poppins font (modern, playful)
+- Rounded corners (12-24px) throughout
+- Glass-morphism effects with soft shadows and gradients
 
-## What Claude Should Focus On
+**Animations:**
+- `bounce-smooth`: upload zone + icon hover
+- `glow-pulse`: status dot breathing effect
+- `spin-smooth`: loading radar
+- Cubic-bezier timing for playful feel (0.34, 1.56, 0.64, 1)
 
-1. **Quality first**: Write clean, tested code over quick solutions
-2. **Test early**: Write tests alongside code, not after
-3. **Document as you go**: Clear commits, meaningful variable names
-4. **Ask when uncertain**: Clarify requirements before building
+## Key Patterns & Details
+
+### Image Handling
+- File input is hidden; `label` click triggers it
+- Image loaded via `FileReader` API into canvas
+- Canvas sizing matches image aspect ratio
+- Drawing overlay canvas synchronized with image canvas dimensions
+
+### Analysis Simulation
+- `runAnalysis()` shows modal, simulates work (currently hardcoded results)
+- Replace this function when connecting to real analysis backend
+- Results format: `{ quality, density, maturity, confidence }`
+- Confidence bar animates from 0% → result value on display
+
+### Mobile Responsiveness
+- Grid layout switches from 3-column to 2-column at 1200px breakpoint
+- Canvas wrapping has min-height to prevent collapse
+- Button sizing scales down on smaller screens
+
+## Design Guidance
+
+**Lemonade Aesthetic (Current):**
+- Fresh, playful, bright color palette
+- High-energy animations with smooth easing
+- Generous gradients and soft shadows
+- Premium feel with modern typography
+- Friendly, approachable tone
+
+**When modifying UI:**
+- Keep color palette cohesive (all lemonade colors should feel intentional)
+- Animations should use cubic-bezier easing or spring-like feels
+- Maintain rounded corner consistency (12px minimum, 24px for major containers)
+- Use CSS variables for colors—never hardcode color values inline
+
+## GitHub Integration
+
+Claude automatically commits after file changes and pushes to GitHub. All commits attributed to user only (no co-author).
+
+## Code Conventions
+
+- **JavaScript style**: camelCase for variables/functions, clear naming (`handleUpload`, `appState`, `dom`)
+- **Comments**: Use section headers (`// ============ SECTION NAME ============`) to organize code blocks
+- **No external dependencies**: Leverage Canvas API and vanilla JS to keep the app self-contained
