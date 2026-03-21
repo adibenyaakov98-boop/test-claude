@@ -444,21 +444,21 @@
 
         .confidence-bar {
             width: 100%;
-            height: 10px;
-            background: #FEE2E2;
-            border-radius: 8px;
+            height: 14px;
+            background: rgba(255, 208, 0, 0.2);
+            border-radius: 12px;
             overflow: hidden;
-            margin: 10px 0;
-            border: none;
+            margin: 14px 0;
+            border: 2px solid var(--primary-yellow);
         }
 
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, #FB923C 0%, #FBBF24 50%, #86EFAC 100%);
+            background: linear-gradient(90deg, var(--coral) 0%, var(--primary-yellow) 50%, var(--bright-lime) 100%);
             width: 0%;
-            transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
-            border-radius: 8px;
+            transition: width 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 20px var(--bright-lime), inset 0 0 8px rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
         }
 
         .tips {
