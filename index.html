@@ -1114,15 +1114,19 @@
             },
 
             drawResult(result) {
-                const canvas = document.getElementById('overlay-canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                try {
+                    const canvas = document.getElementById('overlay-canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                this.init(result);
-                this.drawStrikeZone(ctx, result);
-                this.drawAngleArc(ctx, result);
-                this.drawEyeMarkers(ctx, result);
-                this.animationLoop(ctx);
+                    this.init(result);
+                    this.drawStrikeZone(ctx, result);
+                    this.drawAngleArc(ctx, result);
+                    this.drawEyeMarkers(ctx, result);
+                    this.animationLoop(ctx);
+                } catch (error) {
+                    console.error('OverlayRenderer error:', error);
+                }
             },
 
             drawStrikeZone(ctx, result) {
