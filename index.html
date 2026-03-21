@@ -147,38 +147,52 @@
         .content {
             flex: 1;
             display: grid;
-            grid-template-columns: 300px 1fr 320px;
-            gap: 15px;
-            padding: 15px;
+            grid-template-columns: 340px 1fr 360px;
+            gap: 20px;
+            padding: 24px;
             overflow-y: auto;
             width: 100%;
             min-height: 0;
         }
 
         .panel {
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFFBF0 100%);
-            backdrop-filter: blur(10px);
-            border: 2px solid #FFE8B6;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 12px 40px rgba(251, 191, 36, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, #FFFEF0 0%, #FFFFF5 100%);
+            backdrop-filter: blur(12px);
+            border: 3px solid var(--primary-yellow);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(255, 208, 0, 0.15), 0 0 0 1px rgba(50, 255, 0, 0.1);
             display: flex;
             flex-direction: column;
             min-height: 0;
             overflow-y: auto;
+            position: relative;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-yellow), var(--bright-lime));
+            border-radius: 28px 28px 0 0;
         }
 
         .panel-title {
-            font-size: 13px;
-            background: linear-gradient(135deg, #FBBF24 0%, #22C55E 100%);
+            font-size: 14px;
+            background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--bright-lime) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.3px;
-            margin-bottom: 15px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #FFE8B6;
-            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 3px solid var(--primary-yellow);
+            font-weight: 800;
+            font-family: 'Fredoka One', cursive;
+            text-transform: uppercase;
         }
 
         .upload-zone {
