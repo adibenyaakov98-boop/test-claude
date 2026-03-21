@@ -475,12 +475,22 @@
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes bounce-smooth {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-18px); }
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 12px #86EFAC, 0 0 20px rgba(134, 239, 172, 0.3); }
+            50% { box-shadow: 0 0 20px #86EFAC, 0 0 40px rgba(134, 239, 172, 0.5); }
         }
 
         @keyframes blink {
@@ -489,6 +499,11 @@
         }
 
         @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-smooth {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
