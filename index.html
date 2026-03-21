@@ -394,36 +394,52 @@
         }
 
         .metric {
-            background: linear-gradient(135deg, #FFFBF0 0%, #F0FDF4 100%);
-            border: 2px solid #FEE2E2;
-            border-radius: 12px;
-            padding: 14px;
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.1);
+            background: linear-gradient(135deg, rgba(255, 208, 0, 0.12) 0%, rgba(50, 255, 0, 0.08) 100%);
+            border: 3px solid var(--primary-yellow);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(255, 208, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-yellow), var(--bright-lime));
         }
 
         .metric-label {
-            font-size: 11px;
-            color: var(--text-secondary);
+            font-size: 12px;
+            color: var(--text-dark);
             letter-spacing: -0.2px;
-            margin-bottom: 6px;
-            font-weight: 600;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
         }
 
         .metric-value {
-            font-size: 24px;
-            background: linear-gradient(135deg, #FBBF24 0%, #FB923C 100%);
+            font-size: 32px;
+            background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--bright-lime) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: none;
-            font-weight: 800;
+            font-weight: 900;
+            font-family: 'Fredoka One', cursive;
         }
 
         .metric-unit {
-            font-size: 11px;
-            color: #FB923C;
-            margin-top: 4px;
-            font-weight: 600;
+            font-size: 12px;
+            color: var(--deep-lime);
+            margin-top: 6px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .confidence-bar {
