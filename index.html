@@ -153,22 +153,23 @@
 
         .upload-zone {
             border: 2px dashed var(--panel-border);
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 40px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 15px;
+            background: #f9fafb;
         }
 
         .upload-zone:hover {
             border-color: var(--neon-cyan);
-            background: rgba(0, 229, 255, 0.05);
+            background: #f0f8ff;
         }
 
         .upload-zone.drag-over {
             border-color: var(--neon-green);
-            background: rgba(0, 255, 136, 0.1);
+            background: #ecfdf5;
             transform: scale(1.02);
         }
 
@@ -179,13 +180,14 @@
         }
 
         .upload-text {
-            color: var(--neon-cyan);
+            color: var(--text-primary);
             font-size: 14px;
             margin-bottom: 5px;
+            font-weight: 500;
         }
 
         .upload-hint {
-            color: #888;
+            color: var(--text-light);
             font-size: 11px;
         }
 
