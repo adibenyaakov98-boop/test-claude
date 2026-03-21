@@ -873,58 +873,6 @@
             dom.scanModal.classList.remove('show');
         }
 
-        // ============ SAMPLE IMAGES ============
-        function createSampleButtons() {
-            for (let i = 0; i < 3; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'sample-btn';
-                btn.innerHTML = createCoconutSVG(['#8B4513', '#A0522D', '#9B6B47'][i]);
-                btn.onclick = () => loadSampleImage(i);
-                dom.samples.appendChild(btn);
-            }
-        }
-
-        function createCoconutSVG(color) {
-            return `<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="25" cy="25" rx="20" ry="22" fill="${color}" stroke="#654321" stroke-width="0.5"/>
-                <circle cx="18" cy="15" r="2.5" fill="#333"/>
-                <circle cx="25" cy="12" r="2.5" fill="#333"/>
-                <circle cx="32" cy="15" r="2.5" fill="#333"/>
-            </svg>`;
-        }
-
-        function loadSampleImage(idx) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 300;
-            canvas.height = 300;
-            const ctx = canvas.getContext('2d');
-
-            // Brown coconut
-            ctx.fillStyle = '#8B4513';
-            ctx.beginPath();
-            ctx.ellipse(150, 150, 80, 100, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Highlight
-            ctx.fillStyle = 'rgba(255, 255, 200, 0.3)';
-            ctx.beginPath();
-            ctx.ellipse(100, 80, 40, 50, -0.4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Eyes
-            ctx.fillStyle = '#333';
-            [[110, 140], [150, 125], [190, 140]].forEach(([x, y]) => {
-                ctx.beginPath();
-                ctx.ellipse(x, y, 8, 12, 0.3, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            canvas.toBlob(blob => {
-                const file = new File([blob], 'sample.png', { type: 'image/png' });
-                loadImage(file);
-            });
-        }
-
         // ============ INIT PARTICLES ============
         function initParticles() {
             if (typeof tsParticles !== 'undefined') {
