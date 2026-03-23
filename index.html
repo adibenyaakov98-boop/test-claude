@@ -11,66 +11,52 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary-yellow: #FFD000;
-            --bright-lime: #32FF00;
-            --deep-lime: #00A86B;
-            --sky-blue: #87CEEB;
-            --coral: #FF6B6B;
-            --cream: #FFFEF0;
-            --dark-gray: #1A1A1A;
-            --text-dark: #2D2D2D;
-            --accent-pink: #FF69B4;
+            --lemonade-pink: #FF0083;
+            --lemonade-pink-soft: rgba(255, 0, 131, 0.1);
+            --pure-white: #FFFFFF;
+            --soft-gray: #F7F7F7;
+            --text-dark: #1A1A1A;
+            --text-muted: #666666;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.05);
+            --shadow-pink: 0 8px 24px rgba(255, 0, 131, 0.2);
         }
 
         html, body {
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, #FFFEF0 0%, #FFF8DC 50%, #FFFFED 100%);
+            background: var(--soft-gray);
             color: var(--text-dark);
-            font-family: 'Outfit', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             overflow: hidden;
             position: relative;
         }
 
-        /* Decorative background pattern */
-        html::before {
-            content: '';
+        /* Animated Mesh Background */
+        .bg-mesh {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(255, 208, 0, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(50, 255, 0, 0.08) 0%, transparent 50%);
-            pointer-events: none;
             z-index: 0;
+            background: 
+                radial-gradient(at 0% 0%, rgba(255, 0, 131, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 255, 255, 1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 0, 131, 0.03) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 255, 255, 1) 0px, transparent 50%);
+            animation: mesh-float 20s ease-infinite;
         }
 
-        #particles-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        #scan-lines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: none;
-            pointer-events: none;
-            z-index: 998;
+        @keyframes mesh-float {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .app {
@@ -80,679 +66,374 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            padding: 24px;
+            gap: 24px;
         }
 
         .header {
-            padding: 24px 40px;
-            border-bottom: 4px solid var(--primary-yellow);
-            background: linear-gradient(90deg, #FFFEF0 0%, #FFFFF5 100%);
-            backdrop-filter: blur(8px);
+            padding: 20px 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 16px 48px rgba(255, 208, 0, 0.2);
-            border-radius: 0 0 32px 32px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
         }
 
         .logo {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
         }
 
         .logo-icon {
-            font-size: 48px;
-            animation: bounce-energetic 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            filter: drop-shadow(0 4px 12px rgba(255, 208, 0, 0.4));
+            font-size: 32px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05));
         }
 
         .logo-text h1 {
-            font-size: 32px;
-            font-family: 'Fredoka One', cursive;
-            background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--bright-lime) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
-            letter-spacing: -1px;
+            font-size: 24px;
+            font-family: 'Urbanist', sans-serif;
             font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: -0.03em;
         }
 
         .logo-text .subtitle {
-            font-size: 12px;
-            color: var(--deep-lime);
-            letter-spacing: 1px;
+            font-size: 10px;
+            color: var(--lemonade-pink);
+            letter-spacing: 0.1em;
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
         }
 
         .status {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
-            font-size: 13px;
-            color: var(--text-dark);
+            font-size: 11px;
+            color: var(--text-muted);
             font-weight: 600;
+            letter-spacing: 0.05em;
         }
 
         .dot {
-            width: 12px;
-            height: 12px;
-            background: var(--bright-lime);
+            width: 8px;
+            height: 8px;
+            background: var(--lemonade-pink);
             border-radius: 50%;
-            animation: pulse-neon 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-            box-shadow: 0 0 16px var(--bright-lime), inset 0 0 8px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px var(--lemonade-pink);
         }
 
         .content {
             flex: 1;
             display: grid;
-            grid-template-columns: 340px 1fr 360px;
-            gap: 20px;
-            padding: 24px;
-            overflow-y: auto;
-            width: 100%;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 24px;
             min-height: 0;
         }
 
         .panel {
-            background: linear-gradient(135deg, #FFFEF0 0%, #FFFFF5 100%);
-            backdrop-filter: blur(12px);
-            border: 3px solid var(--primary-yellow);
-            border-radius: 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
             padding: 32px;
-            box-shadow: 0 20px 60px rgba(255, 208, 0, 0.15), 0 0 0 1px rgba(50, 255, 0, 0.1);
+            box-shadow: var(--shadow-soft);
             display: flex;
             flex-direction: column;
             min-height: 0;
             overflow-y: auto;
-            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-yellow), var(--bright-lime));
-            border-radius: 28px 28px 0 0;
+        .panel:hover {
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
         }
 
         .panel-title {
-            font-size: 14px;
-            background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--bright-lime) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 3px solid var(--primary-yellow);
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            margin-bottom: 24px;
             font-weight: 800;
-            font-family: 'Fredoka One', cursive;
+            font-family: 'DM Sans', sans-serif;
             text-transform: uppercase;
         }
 
         .upload-zone {
-            border: 4px dashed var(--primary-yellow);
+            border: 2px dashed rgba(255, 0, 131, 0.2);
             border-radius: 24px;
-            padding: 60px 28px;
+            padding: 40px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, rgba(255, 208, 0, 0.05) 0%, rgba(50, 255, 0, 0.03) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-zone::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 208, 0, 0.1), transparent);
-            pointer-events: none;
+            transition: all 0.3s ease;
+            background: var(--lemonade-pink-soft);
+            margin-bottom: 24px;
         }
 
         .upload-zone:hover {
-            border-color: var(--bright-lime);
-            background: linear-gradient(135deg, rgba(50, 255, 0, 0.08) 0%, rgba(0, 168, 107, 0.05) 100%);
-            transform: translateY(-8px);
-            box-shadow: 0 24px 48px rgba(50, 255, 0, 0.2);
-        }
-
-        .upload-zone.drag-over {
-            border-color: var(--sky-blue);
-            background: linear-gradient(135deg, rgba(135, 206, 235, 0.1) 0%, rgba(255, 208, 0, 0.08) 100%);
-            transform: scale(1.08);
-            box-shadow: 0 32px 64px rgba(135, 206, 235, 0.25);
+            border-color: var(--lemonade-pink);
+            background: rgba(255, 0, 131, 0.05);
+            transform: translateY(-4px);
         }
 
         .upload-icon {
-            font-size: 72px;
+            font-size: 48px;
             margin-bottom: 16px;
-            animation: bounce-energetic 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            filter: drop-shadow(0 8px 16px rgba(255, 208, 0, 0.3));
+            display: block;
         }
 
         .upload-text {
             color: var(--text-dark);
-            font-size: 18px;
-            margin-bottom: 8px;
-            font-weight: 800;
-            font-family: 'Fredoka One', cursive;
+            font-size: 16px;
+            margin-bottom: 4px;
+            font-weight: 700;
+            font-family: 'Urbanist', sans-serif;
         }
 
         .upload-hint {
-            color: var(--text-dark);
-            font-size: 13px;
-            font-weight: 600;
-            opacity: 0.7;
+            color: var(--text-muted);
+            font-size: 12px;
         }
 
         .buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            background: linear-gradient(135deg, var(--primary-yellow) 0%, #FFC700 100%);
-            color: var(--text-dark);
-            cursor: pointer;
-            border-radius: 16px;
-            font-family: 'Fredoka One', cursive;
-            font-size: 14px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 8px 24px rgba(255, 208, 0, 0.4), inset 0 -4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        button:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        button:hover:not(:disabled) {
-            background: linear-gradient(135deg, #FFC700 0%, var(--bright-lime) 100%);
-            box-shadow: 0 12px 36px rgba(50, 255, 0, 0.35), inset 0 -4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-4px);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .canvas-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 0;
-            min-height: 400px;
-        }
-
-        .canvas-wrap {
-            flex: 1;
-            position: relative;
-            background: linear-gradient(135deg, rgba(50, 255, 0, 0.08) 0%, rgba(0, 168, 107, 0.05) 50%, rgba(135, 206, 235, 0.08) 100%);
-            border-radius: 24px;
-            overflow: hidden;
-            min-height: 300px;
-            width: 100%;
-            height: 100%;
-            border: 4px solid var(--bright-lime);
-            box-shadow: inset 0 0 32px rgba(50, 255, 0, 0.15), 0 16px 48px rgba(50, 255, 0, 0.1);
-            position: relative;
-        }
-
-        .canvas-wrap::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 70% 30%, rgba(255, 208, 0, 0.05), transparent);
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        #imageCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        #overlayCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            cursor: crosshair;
-            z-index: 10;
-        }
-
-        .status-bar {
-            padding: 16px;
-            background: linear-gradient(135deg, rgba(50, 255, 0, 0.15) 0%, rgba(0, 168, 107, 0.1) 100%);
-            border: 3px solid var(--bright-lime);
-            border-radius: 16px;
-            font-size: 14px;
-            color: var(--deep-lime);
-            text-align: center;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            box-shadow: 0 8px 24px rgba(50, 255, 0, 0.25);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .results {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .results-locked {
+        button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            background: var(--lemonade-pink);
+            color: white;
+            cursor: pointer;
+            border-radius: 16px;
+            font-family: 'Urbanist', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-pink);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(255, 0, 131, 0.3);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            background: #E0E0E0;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #999;
+        }
+
+        .canvas-container {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: var(--text-secondary);
+            gap: 20px;
+        }
+
+        .canvas-wrap {
             flex: 1;
-        }
-
-        .lock-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .metric {
-            background: linear-gradient(135deg, rgba(255, 208, 0, 0.12) 0%, rgba(50, 255, 0, 0.08) 100%);
-            border: 3px solid var(--primary-yellow);
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 8px 24px rgba(255, 208, 0, 0.15);
             position: relative;
+            background: white;
+            border-radius: 24px;
             overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .metric::before {
-            content: '';
+        #imageCanvas, #overlayCanvas {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-yellow), var(--bright-lime));
+            width: 100%;
+            height: 100%;
+        }
+
+        .status-bar {
+            padding: 14px;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+        }
+
+        .metric {
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0,0,0,0.03);
         }
 
         .metric-label {
-            font-size: 12px;
-            color: var(--text-dark);
-            letter-spacing: -0.2px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
 
         .metric-value {
-            font-size: 32px;
-            background: linear-gradient(90deg, var(--primary-yellow) 0%, var(--bright-lime) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
+            font-size: 28px;
+            color: var(--text-dark);
             font-weight: 900;
-            font-family: 'Fredoka One', cursive;
+            font-family: 'Urbanist', sans-serif;
         }
 
         .metric-unit {
-            font-size: 12px;
-            color: var(--deep-lime);
-            margin-top: 6px;
+            font-size: 11px;
+            color: var(--lemonade-pink);
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+            margin-top: 4px;
         }
 
         .confidence-bar {
             width: 100%;
-            height: 14px;
-            background: rgba(255, 208, 0, 0.2);
-            border-radius: 12px;
+            height: 8px;
+            background: #F0F0F0;
+            border-radius: 10px;
             overflow: hidden;
-            margin: 14px 0;
-            border: 2px solid var(--primary-yellow);
+            margin: 12px 0;
         }
 
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--coral) 0%, var(--primary-yellow) 50%, var(--bright-lime) 100%);
+            background: var(--lemonade-pink);
             width: 0%;
-            transition: width 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 0 20px var(--bright-lime), inset 0 0 8px rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
+            transition: width 1s ease-in-out;
         }
 
         .tips {
-            background: linear-gradient(135deg, rgba(255, 208, 0, 0.2) 0%, rgba(255, 208, 0, 0.15) 100%);
-            border: 3px solid var(--primary-yellow);
-            border-radius: 16px;
-            padding: 18px;
-            font-size: 13px;
-            box-shadow: 0 12px 32px rgba(255, 208, 0, 0.2);
-            position: relative;
-        }
-
-        .tips::before {
-            content: '💡';
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            font-size: 24px;
+            background: var(--lemonade-pink-soft);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 12px;
         }
 
         .tips-label {
-            color: var(--text-dark);
-            font-size: 13px;
-            letter-spacing: -0.3px;
+            font-weight: 800;
+            font-size: 12px;
+            color: var(--lemonade-pink);
             margin-bottom: 12px;
-            margin-top: 8px;
-            font-weight: 900;
-            font-family: 'Fredoka One', cursive;
         }
 
         .tip-item {
-            color: var(--text-dark);
-            margin-bottom: 10px;
-            padding-left: 16px;
-            border-left: 4px solid var(--bright-lime);
             font-size: 12px;
-            font-weight: 600;
-            position: relative;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            padding-left: 12px;
+            border-left: 2px solid var(--lemonade-pink);
         }
 
         .reset-btn {
-            background: linear-gradient(135deg, var(--coral) 0%, var(--accent-pink) 100%);
-            color: #FFFFFF;
-            border-color: var(--coral);
-            margin-top: 14px;
-            font-weight: 900;
+            background: white;
+            color: var(--lemonade-pink);
+            border: 2px solid var(--lemonade-pink);
+            box-shadow: none;
+            margin-top: 12px;
         }
 
         .reset-btn:hover {
-            background: linear-gradient(135deg, var(--accent-pink) 0%, var(--coral) 100%);
-            box-shadow: 0 12px 32px rgba(255, 107, 107, 0.35);
-            transform: translateY(-2px);
+            background: var(--lemonade-pink-soft);
+            color: var(--lemonade-pink);
+            box-shadow: none;
         }
 
-        /* Modal */
+        /* Modal Redesign */
         .modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(26, 26, 26, 0.6);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
             z-index: 10000;
             display: none;
+            align-items: center;
+            justify-content: center;
         }
 
-        .modal.show {
-            display: flex;
-        }
+        .modal.show { display: flex; }
 
         .modal-content {
+            background: white;
+            padding: 48px;
+            border-radius: 40px;
+            width: 400px;
             text-align: center;
-            background: linear-gradient(135deg, #FFFEF0 0%, #FFFFF5 100%);
-            padding: 60px 48px;
-            border-radius: 32px;
-            box-shadow: 0 32px 80px rgba(255, 208, 0, 0.3), 0 0 0 4px var(--primary-yellow);
-            border: 4px solid var(--primary-yellow);
-            position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.1);
         }
 
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            background: linear-gradient(135deg, var(--primary-yellow), var(--bright-lime));
-            border-radius: 32px;
-            z-index: -1;
-            opacity: 0.2;
-        }
-
-        .radar {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 40px;
-            border: 5px solid var(--bright-lime);
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid var(--lemonade-pink-soft);
+            border-top: 4px solid var(--lemonade-pink);
             border-radius: 50%;
-            box-shadow: 0 0 60px var(--bright-lime), inset 0 0 60px rgba(50, 255, 0, 0.2);
-            animation: spin-energetic 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            position: relative;
-            background: radial-gradient(circle, rgba(50, 255, 0, 0.2), rgba(255, 208, 0, 0.05));
+            margin: 0 auto 32px;
+            animation: spin 1s linear infinite;
         }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .modal-text {
-            font-size: 24px;
-            color: var(--text-dark);
-            letter-spacing: -0.8px;
-            margin-bottom: 36px;
-            font-weight: 900;
-            font-family: 'Fredoka One', cursive;
-        }
-
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            font-family: 'Urbanist', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            margin-bottom: 24px;
         }
 
         .step {
-            font-size: 15px;
-            color: var(--text-dark);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            opacity: 0.3;
+            transition: all 0.3s ease;
         }
 
         .step.active {
-            color: var(--bright-lime);
             opacity: 1;
+            color: var(--lemonade-pink);
             font-weight: 700;
-            transform: translateX(4px);
         }
 
-        input[type="file"] {
-            display: none;
-        }
-
-        @keyframes bounce-energetic {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-24px) scale(1.05); }
-        }
-
-        @keyframes pulse-neon {
-            0%, 100% {
-                box-shadow: 0 0 16px var(--bright-lime), inset 0 0 8px rgba(255, 255, 255, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 32px var(--bright-lime), inset 0 0 12px rgba(255, 255, 255, 0.8);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes spin-energetic {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.02); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-
-        @keyframes blink {
-            0%, 49%, 51%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        @media (max-width: 1200px) {
-            .content {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-                padding: 15px;
-            }
-            .header {
-                padding: 15px 20px;
-            }
-            .logo-text h1 {
-                font-size: 20px;
-            }
-            .logo-icon {
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                padding: 12px;
-            }
-            .header {
-                padding: 12px 15px;
-                flex-direction: column;
-                gap: 12px;
-            }
-            .logo {
-                gap: 10px;
-            }
-            .logo-icon {
-                font-size: 28px;
-            }
-            .logo-text h1 {
-                font-size: 18px;
-            }
-            .logo-text .subtitle {
-                font-size: 9px;
-            }
-            .status {
-                font-size: 11px;
-            }
-            .panel {
-                padding: 15px;
-            }
-            .panel-title {
-                font-size: 11px;
-            }
-            .upload-zone {
-                padding: 30px 15px;
-            }
-            .upload-icon {
-                font-size: 40px;
-            }
-            .upload-text {
-                font-size: 13px;
-            }
-            button {
-                font-size: 11px;
-                padding: 10px;
-            }
-            .metric-value {
-                font-size: 16px;
-            }
-            .metric-label {
-                font-size: 9px;
-            }
-            .tips {
-                font-size: 11px;
-            }
-            .tip-item {
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 10px 12px;
-            }
-            .logo-icon {
-                font-size: 24px;
-            }
-            .logo-text h1 {
-                font-size: 16px;
-            }
-            .content {
-                gap: 10px;
-                padding: 10px;
-            }
-            .panel {
-                padding: 12px;
-            }
-            .upload-zone {
-                padding: 25px 12px;
-            }
-            .upload-icon {
-                font-size: 36px;
-            }
-            .metric-value {
-                font-size: 14px;
-            }
-            button {
-                font-size: 10px;
-                padding: 8px;
-            }
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .content { grid-template-columns: 1fr; }
+            .app { overflow-y: auto; height: auto; min-height: 100%; }
+            .canvas-wrap { height: 400px; flex: none; }
         }
     </style>
+
 </head>
-<body>
-    <div id="particles-bg"></div>
-    <div id="scan-lines"></div>
+    <div class="bg-mesh"></div>
 
     <div class="app">
         <div class="header">
             <div class="logo">
                 <div class="logo-icon">🥥</div>
                 <div class="logo-text">
-                    <h1>CocoNUT Cracker</h1>
-                    <div class="subtitle">PRECISION COCONUT ANALYSIS SYSTEM v2.0</div>
+                    <h1>Lemonade Coco</h1>
+                    <div class="subtitle">Precision Analysis • Refreshing Design</div>
                 </div>
             </div>
             <div class="status">
-                <span>SYSTEM ONLINE</span>
+                <span>SYSTEM ACTIVE</span>
                 <div class="dot"></div>
             </div>
         </div>
@@ -760,34 +441,34 @@
         <div class="content">
             <!-- Upload Panel -->
             <div class="panel">
-                <div class="panel-title">// TARGET ACQUISITION</div>
+                <div class="panel-title">Targeting</div>
                 <div class="upload-zone" id="dropZone">
-                    <div class="upload-icon">📡</div>
-                    <div class="upload-text">DROP COCONUT IMAGE</div>
-                    <div class="upload-hint">or click to select</div>
+                    <span class="upload-icon">📸</span>
+                    <div class="upload-text">Upload Image</div>
+                    <div class="upload-hint">Drag & drop your coconut here</div>
                 </div>
                 <div class="buttons">
-                    <button id="uploadBtn">SELECT TARGET</button>
-                    <button id="analyzeBtn" disabled>INITIATE ANALYSIS</button>
+                    <button id="uploadBtn">Choose File</button>
+                    <button id="analyzeBtn" disabled>Run Analysis</button>
                 </div>
             </div>
 
             <!-- Canvas Panel -->
             <div class="panel canvas-container">
-                <div class="panel-title">// VISUAL FEED</div>
+                <div class="panel-title">Visual Feed</div>
                 <div class="canvas-wrap">
                     <canvas id="imageCanvas"></canvas>
                     <canvas id="overlayCanvas"></canvas>
                 </div>
-                <div class="status-bar" id="statusBar">AWAITING TARGET ACQUISITION</div>
+                <div class="status-bar" id="statusBar">Waiting for image...</div>
             </div>
 
             <!-- Results Panel -->
             <div class="panel">
-                <div class="panel-title">// MISSION DATA</div>
+                <div class="panel-title">Mission Data</div>
                 <div id="resultsLocked" class="results-locked">
-                    <div class="lock-icon">🔒</div>
-                    <div>RUN ANALYSIS TO UNLOCK</div>
+                    <div class="lock-icon" style="font-size: 40px; margin-bottom: 16px; opacity: 0.2;">📊</div>
+                    <div style="font-size: 14px; font-weight: 600; color: var(--text-muted);">Awaiting Results</div>
                 </div>
                 <div id="resultsContent" class="results" style="display: none;">
                     <div class="metric">
@@ -813,10 +494,10 @@
                         <div class="metric-unit">LIGHT / MEDIUM / FIRM</div>
                     </div>
                     <div class="tips">
-                        <div class="tips-label">⚡ TACTICAL TIPS</div>
+                        <div class="tips-label">Optimization Tips</div>
                         <div id="tipsList"></div>
                     </div>
-                    <button id="resetBtn" class="reset-btn">NEW TARGET</button>
+                    <button id="resetBtn" class="reset-btn">Analyze New Base</button>
                 </div>
             </div>
         </div>
@@ -825,15 +506,14 @@
     <!-- Scan Modal -->
     <div id="scanModal" class="modal">
         <div class="modal-content">
-            <div class="radar"></div>
-            <div class="modal-text">ANALYZING COCONUT STRUCTURE...</div>
+            <div class="loader-ring"></div>
+            <div class="modal-text">Analyzing Structure</div>
             <div class="steps" id="steps">
-                <div class="step">INITIALIZING PIXEL MATRIX</div>
-                <div class="step">DETECTING COCONUT BOUNDARY</div>
-                <div class="step">SCANNING FOR EYE CLUSTERS</div>
-                <div class="step">COMPUTING OPTIMAL STRIKE VECTOR</div>
-                <div class="step">CALCULATING CONFIDENCE MATRIX</div>
-                <div class="step">ANALYSIS COMPLETE ✓</div>
+                <div class="step">Processing Pixels</div>
+                <div class="step">Detecting Boundaries</div>
+                <div class="step">Scanning Eyre Clusters</div>
+                <div class="step">Optimizing Strike Vector</div>
+                <div class="step">Finalizing Analysis</div>
             </div>
         </div>
     </div>
@@ -1142,122 +822,55 @@
             const x = drawX + result.strikeX * scale;
             const y = drawY + result.strikeY * scale;
 
-            // Semi-transparent overlay to darken areas except target
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.clearRect(x - 80, y - 80, 160, 160);
-
-            // PRIMARY TARGET MARKER - Multiple glowing rings
-            ctx.strokeStyle = '#ff6b35';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = '#ff6b35';
-            ctx.shadowBlur = 20;
+            // Sleek minimalist target
+            ctx.strokeStyle = 'rgba(255, 0, 131, 1)';
+            ctx.lineWidth = 1;
+            
+            // Outer ring
             ctx.beginPath();
-            ctx.arc(x, y, 60, 0, Math.PI * 2);
+            ctx.arc(x, y, 40, 0, Math.PI * 2);
             ctx.stroke();
 
-            ctx.strokeStyle = '#00e5ff';
+            // Inner crosshair
             ctx.lineWidth = 2;
-            ctx.shadowColor = '#00e5ff';
-            ctx.shadowBlur = 15;
             ctx.beginPath();
-            ctx.arc(x, y, 45, 0, Math.PI * 2);
+            ctx.moveTo(x - 15, y); ctx.lineTo(x + 15, y);
+            ctx.moveTo(x, y - 15); ctx.lineTo(x, y + 15);
             ctx.stroke();
 
-            ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 2;
-            ctx.shadowColor = '#00ff88';
-            ctx.shadowBlur = 10;
-            ctx.beginPath();
-            ctx.arc(x, y, 30, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Central target - bright red
-            ctx.fillStyle = '#ff1111';
-            ctx.shadowColor = '#ff1111';
-            ctx.shadowBlur = 20;
-            ctx.beginPath();
-            ctx.arc(x, y, 8, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#ffff00';
+            // Central point
+            ctx.fillStyle = '#FF0083';
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fill();
 
-            // CROSSHAIR LINES
-            ctx.shadowBlur = 0;
-            ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 5]);
+            // Angle indicator
+            const angleRad = (result.angle - 90) * Math.PI / 180;
+            const len = 60;
+            ctx.setLineDash([2, 4]);
             ctx.beginPath();
-            ctx.moveTo(x - 100, y);
-            ctx.lineTo(x + 100, y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y - 100);
-            ctx.lineTo(x, y + 100);
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(angleRad) * len, y + Math.sin(angleRad) * len);
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // ANGLE INDICATOR - Arrow showing cut direction
-            ctx.strokeStyle = '#ffd700';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = '#ffd700';
-            ctx.shadowBlur = 10;
-            const angleRad = (result.angle - 90) * Math.PI / 180;
-            const arrowLen = 70;
-            const arrowX = x + Math.cos(angleRad) * arrowLen;
-            const arrowY = y + Math.sin(angleRad) * arrowLen;
-
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(arrowX, arrowY);
-            ctx.stroke();
-
-            const headlen = 15;
-            const angle1 = angleRad - Math.PI / 6;
-            const angle2 = angleRad + Math.PI / 6;
-            ctx.beginPath();
-            ctx.moveTo(arrowX, arrowY);
-            ctx.lineTo(arrowX - headlen * Math.cos(angle1), arrowY - headlen * Math.sin(angle1));
-            ctx.moveTo(arrowX, arrowY);
-            ctx.lineTo(arrowX - headlen * Math.cos(angle2), arrowY - headlen * Math.sin(angle2));
-            ctx.stroke();
-
-            ctx.fillStyle = '#ffd700';
-            ctx.font = 'bold 16px Courier New';
+            // Labels
+            ctx.font = '700 10px Urbanist';
+            ctx.fillStyle = '#FF0083';
             ctx.textAlign = 'center';
-            ctx.shadowColor = '#ffd700';
-            ctx.shadowBlur = 10;
-            ctx.fillText(`${result.angle}°`, arrowX + 20, arrowY - 10);
+            ctx.fillText('OPTIMAL STRIKE POINT', x, y + 60);
+            ctx.fillText(`${result.angle}° ANGLE`, x + Math.cos(angleRad) * (len + 15), y + Math.sin(angleRad) * (len + 15));
 
-            // CUT INSTRUCTIONS
-            ctx.fillStyle = '#00ff88';
-            ctx.font = 'bold 14px Courier New';
-            ctx.textAlign = 'center';
-            ctx.shadowColor = '#00ff88';
-            ctx.shadowBlur = 10;
-            ctx.fillText('⟿ CUT HERE ⟿', x, y + 95);
-
-            // EYE MARKERS
-            result.eyes.forEach((eye, idx) => {
+            // Eye Markers (Minimalist)
+            result.eyes.forEach((eye) => {
                 const ex = drawX + eye.x * scale;
                 const ey = drawY + eye.y * scale;
-                ctx.strokeStyle = '#ff6b35';
-                ctx.lineWidth = 2;
-                ctx.shadowColor = '#ff6b35';
-                ctx.shadowBlur = 8;
+                ctx.strokeStyle = 'rgba(255, 0, 131, 0.4)';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(ex, ey, 15, 0, Math.PI * 2);
+                ctx.arc(ex, ey, 10, 0, Math.PI * 2);
                 ctx.stroke();
-                ctx.fillStyle = '#ff6b35';
-                ctx.font = '10px Courier New';
-                ctx.textAlign = 'center';
-                ctx.fillText(`EYE`, ex, ey + 25);
             });
-
-            ctx.shadowBlur = 0;
         }
 
         function reset() {
@@ -1265,14 +878,13 @@
             appState.analyzing = false;
             appState.lastResult = null;
             dom.analyzeBtn.disabled = true;
-            dom.statusBar.textContent = 'AWAITING TARGET ACQUISITION';
+            dom.statusBar.textContent = 'Waiting for image...';
             dom.resultsLocked.style.display = 'flex';
             dom.resultsContent.style.display = 'none';
             dom.imageCanvas.getContext('2d').clearRect(0, 0, dom.imageCanvas.width, dom.imageCanvas.height);
             dom.overlayCanvas.getContext('2d').clearRect(0, 0, dom.overlayCanvas.width, dom.overlayCanvas.height);
         }
 
-        // ============ MODAL ============
         function showModal() {
             dom.scanModal.classList.add('show');
         }
@@ -1281,32 +893,9 @@
             dom.scanModal.classList.remove('show');
         }
 
-        // ============ INIT PARTICLES ============
-        function initParticles() {
-            if (typeof tsParticles !== 'undefined') {
-                tsParticles.load('particles-bg', {
-                    particles: {
-                        number: { value: window.innerWidth < 768 ? 15 : 30 },
-                        color: { value: '#00ff88' },
-                        shape: { type: 'circle' },
-                        opacity: { value: 0.2 },
-                        size: { value: { min: 2, max: 6 } },
-                        move: {
-                            enable: true,
-                            speed: 0.5,
-                            direction: 'none',
-                            random: true,
-                            outModes: { default: 'bounce' }
-                        }
-                    }
-                });
-            }
-        }
-
         // ============ INITIALIZE ============
         window.addEventListener('DOMContentLoaded', () => {
             setupEvents();
-            initParticles();
         });
     </script>
 </body>
